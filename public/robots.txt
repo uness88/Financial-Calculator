@@ -1,0 +1,28 @@
+# robots.txt for Financial Calculator Suite
+# Optimized for Googlebot, Bingbot, and Google AdSense Crawlers
+
+User-agent: *
+Allow: /
+
+# Google AdSense Crawler Optimization (Mediapartners-Google & Google-Display-Ads-Bot)
+# Ensures Google AdSense review bots can inspect content without restrictions
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: Google-Display-Ads-Bot
+Allow: /
+
+# Disallow private administration and dashboard paths
+Disallow: /*admin*
+Disallow: /*dashboard*
+Disallow: /*settings*
+Disallow: /#admin*
+Disallow: /#dashboard*
+Disallow: /#settings*
+
+# Disallow API and internal state routes
+Disallow: /api/
+Disallow: /assets/private/
+
+# XML Sitemap Location
+Sitemap: https://omnicalc.pro/sitemap.xml

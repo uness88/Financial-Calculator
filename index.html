@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function() {
+        try {
+          if (typeof window !== 'undefined') {
+            var originalFetch = window.fetch ? window.fetch.bind(window) : null;
+            var currentFetch = originalFetch;
+            Object.defineProperty(window, 'fetch', {
+              get: function() {
+                return currentFetch || (originalFetch ? originalFetch : (window.fetch ? window.fetch.bind(window) : undefined));
+              },
+              set: function(val) {
+                currentFetch = val;
+              },
+              configurable: true,
+              enumerable: true
+            });
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <title>Financial Calculators - Free Online Finance, Loan & Investment Tools</title>
+    <meta name="description" content="Free financial calculators for loans, mortgages, investments, retirement, stocks, savings, taxes, and personal finance. Calculate payments, returns, growth, and more." />
+    <meta property="og:title" content="Financial Calculators - Free Online Finance, Loan & Investment Tools" />
+    <meta property="og:description" content="Free financial calculators for loans, mortgages, investments, retirement, stocks, savings, taxes, and personal finance. Calculate payments, returns, growth, and more." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Financial Calculators" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Financial Calculators - Free Online Finance, Loan & Investment Tools" />
+    <meta name="twitter:description" content="Free financial calculators for loans, mortgages, investments, retirement, stocks, savings, taxes, and personal finance. Calculate payments, returns, growth, and more." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-slate-50 text-slate-900 antialiased font-sans selection:bg-emerald-500 selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

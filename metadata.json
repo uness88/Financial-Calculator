@@ -1,0 +1,6 @@
+{
+  "name": "Financial Calculators - Free Online Finance, Loan & Investment Tools",
+  "description": "Free financial calculators for loans, mortgages, investments, retirement, stocks, savings, taxes, and personal finance. Calculate payments, returns, growth, and more.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
