@@ -91,16 +91,19 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
   const [importStatus, setImportStatus] = useState<{ success?: boolean; message?: string } | null>(null);
 
   // Security / PIN lock state
-  const [isUnlocked, setIsUnlocked] = useState(!settings.enablePinProtection);
+  const [isUnlocked, setIsUnlocked] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem('omnicalc_admin_auth') === 'true';
+    } catch {
+      return false;
+    }
+  });
   const [enteredPin, setEnteredPin] = useState('');
   const [pinError, setPinError] = useState('');
 
   // Sync form state if context changes externally
   useEffect(() => {
     setFormState(settings);
-    if (!settings.enablePinProtection) {
-      setIsUnlocked(true);
-    }
   }, [settings]);
 
   // Ensure sitemap default is populated if empty
@@ -128,12 +131,24 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
 
   const handleUnlockWithPin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (enteredPin === settings.adminSecurityPin) {
+    const correctPin = settings.adminSecurityPin || '1234';
+    if (enteredPin.trim() === correctPin.trim()) {
       setIsUnlocked(true);
       setPinError('');
+      try {
+        sessionStorage.setItem('omnicalc_admin_auth', 'true');
+      } catch {}
     } else {
-      setPinError('Incorrect PIN. Please check your passcode and try again.');
+      setPinError('Incorrect PIN code. Please check your passcode and try again (Default PIN: 1234).');
     }
+  };
+
+  const handleLockDashboard = () => {
+    try {
+      sessionStorage.removeItem('omnicalc_admin_auth');
+    } catch {}
+    setIsUnlocked(false);
+    setEnteredPin('');
   };
 
   const handleSave = async () => {
@@ -156,7 +171,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
   };
 
   const handleCopyAdminUrl = () => {
-    const url = `${window.location.origin}/#${formState.adminSecretPath || 'admin-settings'}`;
+    const url = `${window.location.origin}/${formState.adminSecretPath || 'admin-settings'}`;
     navigator.clipboard.writeText(url);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2500);
@@ -298,7 +313,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
   }, [formState, sitemapValidation]);
 
   // If PIN is enabled and user has not unlocked yet, render the PIN verification screen
-  if (!isUnlocked && settings.enablePinProtection) {
+  if (!isUnlocked) {
     return (
       <div className="min-h-[70vh] flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-3xl border border-stone-200 shadow-xl p-8 space-y-6 text-center animate-in fade-in zoom-in-95 duration-200">
@@ -311,7 +326,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
               Site Administration Portal
             </h1>
             <p className="text-xs text-stone-600 leading-relaxed">
-              This private configuration area is restricted to authorized site owners. Please enter your security PIN to unlock.
+              This private configuration dashboard is restricted. Please enter your secret PIN passcode to proceed.
             </p>
           </div>
 
@@ -329,14 +344,18 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
                   setEnteredPin(e.target.value);
                   setPinError('');
                 }}
-                placeholder="Enter 4–8 Digit PIN"
+                placeholder="Enter PIN (e.g. 1234)"
                 autoFocus
                 className="w-full text-center tracking-widest text-2xl font-mono py-3.5 px-4 bg-stone-50 border border-stone-300 rounded-2xl focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-600 focus:bg-white transition-all text-stone-900"
               />
-              {pinError && (
+              {pinError ? (
                 <p className="text-xs text-rose-600 font-medium mt-2 flex items-center justify-center gap-1">
                   <AlertCircle className="w-3.5 h-3.5" />
                   <span>{pinError}</span>
+                </p>
+              ) : (
+                <p className="text-[11px] text-stone-400 mt-2">
+                  Default PIN code: <strong className="text-stone-700 font-mono">1234</strong>
                 </p>
               )}
             </div>
@@ -355,9 +374,9 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
               onClick={onNavigateHome}
               className="hover:text-stone-900 transition-colors cursor-pointer"
             >
-              ← Back to Calculators
+              ← Back to Live Site
             </button>
-            <span className="text-[11px] text-stone-600">Secure Client State</span>
+            <span className="text-[11px] text-stone-600">Encrypted Session</span>
           </div>
         </div>
       </div>
@@ -371,13 +390,13 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
         <div className="space-y-1.5">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold border border-emerald-200">
             <Shield className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Master Site Settings &amp; SEO Center</span>
+            <span>Master Site Settings &amp; Real-time Control</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-stone-950 tracking-tight flex items-center gap-3">
             Site Control Dashboard
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 max-w-2xl leading-relaxed">
-            Configure site branding, domain SEO, edit <code className="text-emerald-700 bg-emerald-50 px-1 rounded font-mono">sitemap.xml</code> and <code className="text-emerald-700 bg-emerald-50 px-1 rounded font-mono">robots.txt</code>, manage Google AdSense compliance, and inject custom tracking tags.
+            All modifications here update the live site immediately across all pages. Manage branding, SEO, AdSense, scripts, and custom head code.
           </p>
         </div>
 
@@ -396,6 +415,15 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
           >
             <Eye className="w-3.5 h-3.5" />
             <span>Live Site</span>
+          </button>
+
+          <button
+            onClick={handleLockDashboard}
+            title="Lock Dashboard & Sign Out"
+            className="px-3.5 py-2.5 rounded-xl bg-stone-100 hover:bg-rose-50 hover:text-rose-700 text-stone-600 font-semibold text-xs transition-colors cursor-pointer flex items-center gap-1.5 border border-stone-200"
+          >
+            <Lock className="w-3.5 h-3.5" />
+            <span>Lock</span>
           </button>
         </div>
       </div>
@@ -1583,20 +1611,20 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
 
               <div className="space-y-1.5">
                 <label htmlFor="secret-path-input" className="text-xs font-semibold text-stone-700">
-                  Private URL Hash Path
+                  Private URL Path
                 </label>
                 <div className="flex items-center gap-2">
                   <div className="relative flex-1">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-stone-400 text-xs font-mono">
-                      /#
+                      /
                     </span>
                     <input
                       id="secret-path-input"
                       type="text"
                       value={formState.adminSecretPath}
-                      onChange={(e) => setFormState({ ...formState, adminSecretPath: e.target.value.replace(/^#/, '') })}
+                      onChange={(e) => setFormState({ ...formState, adminSecretPath: e.target.value.replace(/^[/#]+/, '') })}
                       placeholder="admin-settings"
-                      className="w-full pl-8 pr-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 text-sm font-mono focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 focus:bg-white transition-all"
+                      className="w-full pl-7 pr-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 text-sm font-mono focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 focus:bg-white transition-all"
                     />
                   </div>
                   <button

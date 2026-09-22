@@ -61,7 +61,7 @@ export function generateSitemapXml(baseUrl: string = 'https://omnicalc.pro'): st
   xml += `  <!-- Category Hubs -->\n`;
   CATEGORIES.forEach((cat) => {
     xml += `  <url>\n`;
-    xml += `    <loc>${cleanBaseUrl}/#category/${cat.slug}</loc>\n`;
+    xml += `    <loc>${cleanBaseUrl}/category/${cat.slug}</loc>\n`;
     xml += `    <lastmod>${today}</lastmod>\n`;
     xml += `    <changefreq>weekly</changefreq>\n`;
     xml += `    <priority>0.9</priority>\n`;
@@ -72,11 +72,11 @@ export function generateSitemapXml(baseUrl: string = 'https://omnicalc.pro'): st
   // 3. Static Pages
   xml += `  <!-- Sitewide Information & Support Pages -->\n`;
   const staticPages = [
-    { path: '#saved', priority: '0.6', freq: 'monthly' },
-    { path: '#about', priority: '0.8', freq: 'monthly' },
-    { path: '#contact', priority: '0.8', freq: 'monthly' },
-    { path: '#privacy', priority: '0.6', freq: 'monthly' },
-    { path: '#terms', priority: '0.6', freq: 'monthly' },
+    { path: 'saved', priority: '0.6', freq: 'monthly' },
+    { path: 'about', priority: '0.8', freq: 'monthly' },
+    { path: 'contact', priority: '0.8', freq: 'monthly' },
+    { path: 'privacy', priority: '0.6', freq: 'monthly' },
+    { path: 'terms', priority: '0.6', freq: 'monthly' },
   ];
   staticPages.forEach((p) => {
     xml += `  <url>\n`;
@@ -92,7 +92,7 @@ export function generateSitemapXml(baseUrl: string = 'https://omnicalc.pro'): st
   xml += `  <!-- All 56 Financial Calculators -->\n`;
   ALL_CALCULATORS.forEach((calc) => {
     xml += `  <url>\n`;
-    xml += `    <loc>${cleanBaseUrl}/#calculator/${calc.slug}</loc>\n`;
+    xml += `    <loc>${cleanBaseUrl}/calculator/${calc.slug}</loc>\n`;
     xml += `    <lastmod>${today}</lastmod>\n`;
     xml += `    <changefreq>weekly</changefreq>\n`;
     xml += `    <priority>0.8</priority>\n`;

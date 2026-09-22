@@ -52,7 +52,7 @@ export function updateDocumentSEO(seoOrCalc: SEOMetadata | CalculatorDefinition,
     const calc = seoOrCalc as CalculatorDefinition;
     title = calc.seoTitle || `${calc.name} - ${currentSiteName}`;
     description = calc.metaDescription || calc.shortDescription;
-    canonicalUrl = `${baseUrl}/#calculator/${calc.slug}`;
+    canonicalUrl = `${baseUrl}/calculator/${calc.slug}`;
     ogType = 'website';
     noIndex = false;
     keywords = calc.keywords ? calc.keywords.join(', ') : keywords;

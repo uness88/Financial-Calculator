@@ -55,6 +55,21 @@ export const SiteSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ 
         // In client-only fallback, silent catch
         console.debug('Loaded settings from local storage cache');
       });
+
+    // Cross-tab real-time sync: Listen for storage changes from other tabs/windows
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === SITE_SETTINGS_STORAGE_KEY && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          setSettings((prev) => ({ ...DEFAULT_SITE_SETTINGS, ...prev, ...parsed }));
+        } catch (err) {
+          console.warn('Failed to parse synchronized settings', err);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   // 2. Sync custom head code & Google AdSense Auto-Ads whenever settings change

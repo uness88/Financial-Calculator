@@ -73,8 +73,8 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   customHeadCode: '<!-- Example: Add your Google Analytics, Meta Pixel, or custom CSS here -->\n',
   customFooterNote: '© 2026 OmniCalc Pro Financial Suite. All rights reserved.',
   adminSecretPath: 'admin-settings',
-  enablePinProtection: false,
-  adminSecurityPin: '',
+  enablePinProtection: true,
+  adminSecurityPin: '1234',
 
   // SEO & Webmaster defaults
   canonicalBaseUrl: 'https://omnicalc.pro',

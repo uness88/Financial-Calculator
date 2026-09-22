@@ -42,57 +42,68 @@ function InnerApp() {
     }
   });
 
-  // Sync route with URL hash on load and popstate
+  // Sync route with clean URL path on load and popstate
   useEffect(() => {
-    const parseHash = () => {
+    const parseLocation = () => {
+      let path = window.location.pathname;
       const hash = window.location.hash.replace(/^#\/?/, '');
-      if (!hash) {
+
+      // Seamless migration: If accessed with hash (e.g. #category/loan-mortgage-calculators), convert to clean path
+      if (hash) {
+        const newPath = '/' + hash;
+        window.history.replaceState({}, '', newPath);
+        path = newPath;
+      }
+
+      const clean = path.replace(/^\/+/, '').replace(/\/+$/, '');
+
+      if (!clean) {
         setCurrentView({ type: 'home' });
         return;
       }
 
-      if (hash.startsWith('calculator/')) {
-        const slug = hash.replace('calculator/', '');
+      if (clean.startsWith('calculator/')) {
+        const slug = clean.replace('calculator/', '');
         if (getCalculatorBySlug(slug)) {
           setCurrentView({ type: 'calculator', slug });
           return;
         }
       }
 
-      if (hash.startsWith('category/')) {
-        const catSlug = hash.replace('category/', '');
+      if (clean.startsWith('category/')) {
+        const catSlug = clean.replace('category/', '');
         if (getCategoryBySlug(catSlug)) {
           setCurrentView({ type: 'category', categorySlug: catSlug });
           return;
         }
       }
 
-      if (hash === 'saved') {
+      if (clean === 'saved') {
         setCurrentView({ type: 'saved' });
         return;
       }
 
-      if (hash === 'privacy') {
+      if (clean === 'privacy') {
         setCurrentView({ type: 'privacy' });
         return;
       }
 
-      if (hash === 'terms') {
+      if (clean === 'terms') {
         setCurrentView({ type: 'terms' });
         return;
       }
 
-      if (hash === 'about') {
+      if (clean === 'about') {
         setCurrentView({ type: 'about' });
         return;
       }
 
-      if (hash === 'contact') {
+      if (clean === 'contact') {
         setCurrentView({ type: 'contact' });
         return;
       }
 
-      if (hash === 'admin' || hash === 'admin-settings' || hash === 'dashboard' || hash === 'private-admin') {
+      if (clean === 'admin' || clean === 'admin-settings' || clean === 'dashboard' || clean === 'private-admin') {
         setCurrentView({ type: 'admin' });
         return;
       }
@@ -101,9 +112,13 @@ function InnerApp() {
       setCurrentView({ type: 'home' });
     };
 
-    parseHash();
-    window.addEventListener('hashchange', parseHash);
-    return () => window.removeEventListener('hashchange', parseHash);
+    parseLocation();
+    window.addEventListener('popstate', parseLocation);
+    window.addEventListener('hashchange', parseLocation);
+    return () => {
+      window.removeEventListener('popstate', parseLocation);
+      window.removeEventListener('hashchange', parseLocation);
+    };
   }, []);
 
   // Global keyboard shortcut: Ctrl+Shift+A or Cmd+Shift+A opens Admin Dashboard
@@ -118,57 +133,77 @@ function InnerApp() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Navigation helpers that update URL hash & scroll to top
+  // Navigation helpers that update clean URL path & scroll to top
   const navigateToHome = () => {
-    window.location.hash = '';
+    if (window.location.pathname !== '/') {
+      window.history.pushState({}, '', '/');
+    }
     setCurrentView({ type: 'home' });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navigateToCategory = (categorySlug: string) => {
-    window.location.hash = `category/${categorySlug}`;
+    const target = `/category/${categorySlug}`;
+    if (window.location.pathname !== target) {
+      window.history.pushState({}, '', target);
+    }
     setCurrentView({ type: 'category', categorySlug });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navigateToCalculator = (slug: string) => {
-    window.location.hash = `calculator/${slug}`;
+    const target = `/calculator/${slug}`;
+    if (window.location.pathname !== target) {
+      window.history.pushState({}, '', target);
+    }
     setCurrentView({ type: 'calculator', slug });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navigateToSaved = () => {
-    window.location.hash = 'saved';
+    if (window.location.pathname !== '/saved') {
+      window.history.pushState({}, '', '/saved');
+    }
     setCurrentView({ type: 'saved' });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navigateToPrivacy = () => {
-    window.location.hash = 'privacy';
+    if (window.location.pathname !== '/privacy') {
+      window.history.pushState({}, '', '/privacy');
+    }
     setCurrentView({ type: 'privacy' });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navigateToTerms = () => {
-    window.location.hash = 'terms';
+    if (window.location.pathname !== '/terms') {
+      window.history.pushState({}, '', '/terms');
+    }
     setCurrentView({ type: 'terms' });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navigateToAbout = () => {
-    window.location.hash = 'about';
+    if (window.location.pathname !== '/about') {
+      window.history.pushState({}, '', '/about');
+    }
     setCurrentView({ type: 'about' });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navigateToContact = () => {
-    window.location.hash = 'contact';
+    if (window.location.pathname !== '/contact') {
+      window.history.pushState({}, '', '/contact');
+    }
     setCurrentView({ type: 'contact' });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navigateToAdmin = () => {
-    window.location.hash = 'admin-settings';
+    if (window.location.pathname !== '/admin-settings') {
+      window.history.pushState({}, '', '/admin-settings');
+    }
     setCurrentView({ type: 'admin' });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
