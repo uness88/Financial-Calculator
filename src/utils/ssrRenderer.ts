@@ -18,6 +18,121 @@ export interface PreRenderResult {
   keywords: string;
 }
 
+/**
+ * Shared Header HTML used across all pages
+ */
+function renderHeaderHtml(siteName: string): string {
+  return `
+  <header class="bg-white border-b border-stone-200 py-3.5 px-4 sm:px-8 shadow-xs sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-2.5 text-stone-900 font-bold text-lg group">
+        <span class="p-2 bg-emerald-600 text-white rounded-xl shadow-xs group-hover:bg-emerald-700 transition-colors">🧮</span>
+        <span class="tracking-tight text-stone-900 font-extrabold">${siteName}</span>
+      </a>
+      
+      <nav aria-label="Main Navigation" class="hidden md:flex items-center gap-5 text-xs font-semibold text-stone-600">
+        <a href="/" class="hover:text-emerald-700 transition-colors">All 56 Tools</a>
+        <a href="/category/finance-investment" class="hover:text-emerald-700 transition-colors">Personal Finance</a>
+        <a href="/category/retirement-calculators" class="hover:text-emerald-700 transition-colors">Retirement</a>
+        <a href="/category/loan-mortgage-calculators" class="hover:text-emerald-700 transition-colors">Mortgages &amp; Loans</a>
+        <a href="/category/stock-calculators" class="hover:text-emerald-700 transition-colors">Stocks &amp; Investing</a>
+      </nav>
+
+      <div class="flex items-center gap-3 text-xs">
+        <a href="/about" class="hidden sm:inline-block text-stone-600 hover:text-stone-900 font-medium">About Us</a>
+        <a href="/contact" class="hidden sm:inline-block text-stone-600 hover:text-stone-900 font-medium">Contact Us</a>
+        <a href="/saved" class="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold transition-colors flex items-center gap-1.5">
+          <span>💾</span>
+          <span>Saved</span>
+        </a>
+      </div>
+    </div>
+  </header>`;
+}
+
+/**
+ * Shared Footer HTML used across all pages
+ */
+function renderFooterHtml(siteName: string, settings: SiteSettings): string {
+  const currentYear = new Date().getFullYear();
+  return `
+  <footer class="bg-stone-900 text-stone-300 border-t border-stone-800 mt-20 pt-16 pb-12 px-4 sm:px-8">
+    <div class="max-w-7xl mx-auto space-y-12">
+      <!-- 4-Column Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <!-- Col 1: Brand & Mission -->
+        <div class="space-y-4">
+          <div class="flex items-center gap-2 text-white font-bold text-lg">
+            <span class="p-2 bg-emerald-600 text-white rounded-xl">🧮</span>
+            <span>${siteName}</span>
+          </div>
+          <p class="text-xs text-stone-400 leading-relaxed">
+            Institutional-grade financial calculation suite offering 56 mathematical engines, amortization schedules, and retirement models calibrated to IRS 2026 statutory guidelines.
+          </p>
+          <div class="flex items-center gap-2 text-[11px] text-emerald-400 font-semibold">
+            <span>✓ 100% Client-Side Computation</span>
+            <span>•</span>
+            <span>Zero Tracking</span>
+          </div>
+        </div>
+
+        <!-- Col 2: Categories -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-white">Financial Categories</h3>
+          <ul class="space-y-2 text-xs text-stone-400 font-medium">
+            <li><a href="/category/finance-investment" class="hover:text-emerald-400 transition-colors">Personal Finance &amp; Savings</a></li>
+            <li><a href="/category/retirement-calculators" class="hover:text-emerald-400 transition-colors">Retirement &amp; 401(k) Planning</a></li>
+            <li><a href="/category/loan-mortgage-calculators" class="hover:text-emerald-400 transition-colors">Mortgages, Loans &amp; Amortization</a></li>
+            <li><a href="/category/stock-calculators" class="hover:text-emerald-400 transition-colors">Stocks, Options &amp; Investments</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Popular Calculators -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-white">Popular 2026 Calculators</h3>
+          <ul class="space-y-2 text-xs text-stone-400 font-medium">
+            <li><a href="/calculator/mortgage-calculator" class="hover:text-emerald-400 transition-colors">Mortgage Payment Calculator</a></li>
+            <li><a href="/calculator/compound-interest-calculator" class="hover:text-emerald-400 transition-colors">Compound Interest Calculator</a></li>
+            <li><a href="/calculator/401k-calculator" class="hover:text-emerald-400 transition-colors">401(k) Growth &amp; Employer Match</a></li>
+            <li><a href="/calculator/roth-ira-calculator" class="hover:text-emerald-400 transition-colors">Roth IRA Tax-Free Engine</a></li>
+            <li><a href="/calculator/loan-amortization-calculator" class="hover:text-emerald-400 transition-colors">Loan Amortization Schedule</a></li>
+            <li><a href="/calculator/stock-profit-calculator" class="hover:text-emerald-400 transition-colors">Stock Profit &amp; Dividend Return</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Institutional & Legal Links -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-white">Company &amp; Legal</h3>
+          <ul class="space-y-2 text-xs text-stone-400 font-medium">
+            <li><a href="/about" class="hover:text-emerald-400 transition-colors">About Us &amp; Standards</a></li>
+            <li><a href="/contact" class="hover:text-emerald-400 transition-colors">Contact Us &amp; Support</a></li>
+            <li><a href="/privacy" class="hover:text-emerald-400 transition-colors">Privacy Policy</a></li>
+            <li><a href="/terms" class="hover:text-emerald-400 transition-colors">Terms of Use &amp; Disclaimers</a></li>
+            <li><a href="/saved" class="hover:text-emerald-400 transition-colors">Saved Scenarios</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Legal Disclaimer & Copyright -->
+      <div class="pt-8 border-t border-stone-800 space-y-4">
+        <p class="text-[11px] text-stone-500 leading-relaxed">
+          <strong>Educational &amp; Regulatory Disclaimer:</strong> ${siteName} provides mathematical calculation algorithms and financial models strictly for educational and informational purposes. Projections do not constitute certified financial, tax, mortgage underwriting, or legal advice. Consult a licensed CPA or CFP® professional before making financial commitments.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-400">
+          <p>${settings.customFooterNote || `© ${currentYear} ${siteName}. All rights reserved.`}</p>
+          <div class="flex items-center gap-5">
+            <a href="/about" class="hover:text-white transition-colors">About Us</a>
+            <a href="/contact" class="hover:text-white transition-colors">Contact Us</a>
+            <a href="/privacy" class="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="/terms" class="hover:text-white transition-colors">Terms of Use</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>`;
+}
+
 export function renderPageToString(
   urlPath: string,
   settings: SiteSettings = DEFAULT_SITE_SETTINGS
@@ -83,21 +198,7 @@ export function renderPageToString(
       // Pre-rendered HTML markup
       const html = `
       <div class="min-h-screen bg-stone-50 text-stone-900 flex flex-col antialiased">
-        <header class="bg-white border-b border-stone-200 py-3.5 px-4 sm:px-8 shadow-xs">
-          <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <a href="/" class="flex items-center gap-2 text-stone-900 font-bold text-lg">
-              <span class="p-2 bg-emerald-600 text-white rounded-xl">🧮</span>
-              <span>${siteName}</span>
-            </a>
-            <nav class="hidden md:flex items-center gap-4 text-xs font-medium text-stone-600">
-              <a href="/" class="hover:text-stone-900">All Tools</a>
-              <a href="/category/finance-investment" class="hover:text-stone-900">Personal Finance</a>
-              <a href="/category/retirement-calculators" class="hover:text-stone-900">Retirement</a>
-              <a href="/category/loan-mortgage-calculators" class="hover:text-stone-900">Mortgages &amp; Loans</a>
-              <a href="/category/stock-calculators" class="hover:text-stone-900">Stocks &amp; Investing</a>
-            </nav>
-          </div>
-        </header>
+        ${renderHeaderHtml(siteName)}
 
         <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 space-y-8">
           <!-- Breadcrumbs -->
@@ -280,19 +381,7 @@ export function renderPageToString(
           }
         </main>
 
-        <footer class="bg-stone-900 text-stone-300 border-t border-stone-800 mt-16 pt-12 pb-8 px-4 sm:px-8">
-          <div class="max-w-7xl mx-auto space-y-6">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-400">
-              <p>${settings.customFooterNote || `© 2026 ${siteName}. All rights reserved.`}</p>
-              <div class="flex items-center gap-4">
-                <a href="/privacy" class="hover:text-white">Privacy Policy</a>
-                <a href="/terms" class="hover:text-white">Terms of Use</a>
-                <a href="/about" class="hover:text-white">About Us</a>
-                <a href="/contact" class="hover:text-white">Contact</a>
-              </div>
-            </div>
-          </div>
-        </footer>
+        ${renderFooterHtml(siteName, settings)}
       </div>`;
 
       return {
@@ -320,14 +409,7 @@ export function renderPageToString(
 
       const html = `
       <div class="min-h-screen bg-stone-50 text-stone-900 flex flex-col antialiased">
-        <header class="bg-white border-b border-stone-200 py-3.5 px-4 sm:px-8 shadow-xs">
-          <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <a href="/" class="flex items-center gap-2 text-stone-900 font-bold text-lg">
-              <span class="p-2 bg-emerald-600 text-white rounded-xl">🧮</span>
-              <span>${siteName}</span>
-            </a>
-          </div>
-        </header>
+        ${renderHeaderHtml(siteName)}
 
         <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 space-y-8">
           <nav aria-label="Breadcrumb" class="text-xs text-stone-500 flex items-center gap-2">
@@ -381,6 +463,8 @@ export function renderPageToString(
               : ''
           }
         </main>
+
+        ${renderFooterHtml(siteName, settings)}
       </div>`;
 
       return {
@@ -400,24 +484,35 @@ export function renderPageToString(
     }
   }
 
-  // 3. STATIC PAGES (/privacy, /terms, /about, /contact)
+  // 3. STATIC PAGES (/privacy, /terms, /about, /contact, /saved)
   if (clean === 'privacy') {
     const canonical = `${baseUrl}/privacy`;
     const title = `Privacy Policy | ${siteName}`;
     const desc = `Privacy policy and user data protections for ${siteName}. Zero tracking, client-side execution, and GDPR/CCPA compliance.`;
     const html = `
-    <div class="min-h-screen bg-stone-50 text-stone-900 p-8 max-w-4xl mx-auto space-y-6">
-      <h1 class="text-3xl font-black text-stone-950">Privacy Policy</h1>
-      <p class="text-sm text-stone-600">Last updated: January 2026. Official privacy notice of ${siteName}.</p>
-      <div class="prose prose-stone text-xs sm:text-sm space-y-4 text-stone-700 leading-relaxed">
-        <p>At ${siteName}, accessible from ${baseUrl}, the privacy of our visitors is of paramount importance. This Privacy Policy document outlines the types of information collected and recorded by ${siteName} and how we protect your personal privacy.</p>
-        <h2 class="text-lg font-bold text-stone-900">1. 100% Client-Side Computation</h2>
-        <p>All financial inputs, loan parameters, salary details, and investment scenarios are calculated directly in your local browser. No financial numbers or private inputs are transmitted to external servers.</p>
-        <h2 class="text-lg font-bold text-stone-900">2. Google AdSense &amp; Cookie Consent</h2>
-        <p>We work with Google AdSense to serve non-intrusive advertisements. Google uses cookies to serve ads based on prior visits. You may opt out of personalized advertising by visiting Google Ad Settings.</p>
-        <h2 class="text-lg font-bold text-stone-900">3. Contact Support</h2>
-        <p>For inquiries regarding this privacy statement, email us at ${settings.supportEmail || 'support@omnicalc.pro'}.</p>
-      </div>
+    <div class="min-h-screen bg-stone-50 text-stone-900 flex flex-col antialiased">
+      ${renderHeaderHtml(siteName)}
+      <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+        <h1 class="text-3xl sm:text-4xl font-black text-stone-950">Privacy Policy</h1>
+        <p class="text-xs sm:text-sm text-stone-500">Last updated: January 2026. Official privacy notice of ${siteName}.</p>
+        
+        <div class="prose prose-stone max-w-none text-xs sm:text-sm space-y-6 text-stone-700 leading-relaxed bg-white p-6 sm:p-10 rounded-3xl border border-stone-200 shadow-sm">
+          <p>At ${siteName}, accessible from <a href="${baseUrl}" class="text-emerald-700 underline font-semibold">${baseUrl}</a>, the privacy of our visitors is one of our main priorities. This Privacy Policy document outlines the types of information collected and recorded by ${siteName} and how we protect your financial privacy.</p>
+          
+          <h2 class="text-lg font-bold text-stone-900">1. 100% Client-Side Computation Architecture</h2>
+          <p>All calculations, loan amortization tables, mortgage inputs, salary numbers, investment figures, and tax brackets are computed purely in your local web browser. None of your financial figures or scenarios are transmitted to our servers or saved externally.</p>
+          
+          <h2 class="text-lg font-bold text-stone-900">2. Google AdSense &amp; Advertising Cookies</h2>
+          <p>We partner with Google AdSense to serve non-intrusive advertisements. Google may use cookies, such as the DoubleClick cookie, to serve relevant ads based on prior visits to our site or other websites. You can opt out of personalized advertising by visiting Google's Ad Settings.</p>
+          
+          <h2 class="text-lg font-bold text-stone-900">3. Local Storage</h2>
+          <p>When you save scenarios or customize preferences, they are stored strictly in your browser's localStorage. You can clear this data at any time via your browser settings or our <a href="/saved" class="text-emerald-700 underline">Saved Calculations</a> portal.</p>
+          
+          <h2 class="text-lg font-bold text-stone-900">4. Contact Privacy Officer</h2>
+          <p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us at <a href="/contact" class="text-emerald-700 underline">${settings.supportEmail || 'support@omnicalc.pro'}</a>.</p>
+        </div>
+      </main>
+      ${renderFooterHtml(siteName, settings)}
     </div>`;
 
     return { title, metaDescription: desc, canonicalUrl: canonical, schemaJsonLd: '', bodyHtml: html, keywords: settings.keywords };
@@ -426,18 +521,28 @@ export function renderPageToString(
   if (clean === 'terms') {
     const canonical = `${baseUrl}/terms`;
     const title = `Terms of Use & Financial Disclaimers | ${siteName}`;
-    const desc = `Terms of use, SECURE 2.0 notices, and educational financial disclaimers for ${siteName}.`;
+    const desc = `Terms of use, SECURE Act 2.0 notices, and educational financial disclaimers for ${siteName}.`;
     const html = `
-    <div class="min-h-screen bg-stone-50 text-stone-900 p-8 max-w-4xl mx-auto space-y-6">
-      <h1 class="text-3xl font-black text-stone-950">Terms of Use &amp; Financial Disclaimers</h1>
-      <p class="text-sm text-stone-600">Last updated: January 2026.</p>
-      <div class="prose prose-stone text-xs sm:text-sm space-y-4 text-stone-700 leading-relaxed">
-        <p>By using ${siteName} (${baseUrl}), you accept these terms in full. The financial calculators and models provided are strictly for educational and informational purposes.</p>
-        <h2 class="text-lg font-bold text-stone-900">1. Not Certified Financial Advice</h2>
-        <p>Calculations, mathematical models, and projections provided on this site do not constitute certified financial, investment, legal, tax, or mortgage underwriting advice. Consult a Certified Financial Planner (CFP®), CPA, or licensed mortgage officer before executing financial commitments.</p>
-        <h2 class="text-lg font-bold text-stone-900">2. Accuracy &amp; Regulatory Conformance</h2>
-        <p>While our algorithms are calibrated against IRS 2026 contribution limits and SECURE Act 2.0 regulations, users must verify real-time terms with their respective institutions.</p>
-      </div>
+    <div class="min-h-screen bg-stone-50 text-stone-900 flex flex-col antialiased">
+      ${renderHeaderHtml(siteName)}
+      <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+        <h1 class="text-3xl sm:text-4xl font-black text-stone-950">Terms of Use &amp; Financial Disclaimers</h1>
+        <p class="text-xs sm:text-sm text-stone-500">Last updated: January 2026.</p>
+        
+        <div class="prose prose-stone max-w-none text-xs sm:text-sm space-y-6 text-stone-700 leading-relaxed bg-white p-6 sm:p-10 rounded-3xl border border-stone-200 shadow-sm">
+          <p>By accessing and using ${siteName} (<a href="${baseUrl}" class="text-emerald-700 underline">${baseUrl}</a>), you agree to be bound by these Terms of Use and all applicable financial notices.</p>
+          
+          <h2 class="text-lg font-bold text-stone-900">1. Not Certified Financial Advice</h2>
+          <p>The calculation engines, mathematical formulas, projections, and educational articles provided on this website are designed solely for educational, exploratory, and informational purposes. They do not constitute certified financial, tax, investment, mortgage underwriting, or legal counsel.</p>
+          
+          <h2 class="text-lg font-bold text-stone-900">2. Mathematical Accuracy &amp; IRS Conformance</h2>
+          <p>While our algorithms adhere to CFA Institute methodologies and 2026 IRS contribution limits (e.g. SECURE 2.0 rules), actual real-world loans, tax rates, and investment returns will vary depending on your specific financial institution and jurisdiction.</p>
+
+          <h2 class="text-lg font-bold text-stone-900">3. Limitation of Liability</h2>
+          <p>In no event shall ${siteName} or its developers be liable for any direct, indirect, incidental, or consequential damages resulting from the use or inability to use the tools on this site.</p>
+        </div>
+      </main>
+      ${renderFooterHtml(siteName, settings)}
     </div>`;
 
     return { title, metaDescription: desc, canonicalUrl: canonical, schemaJsonLd: '', bodyHtml: html, keywords: settings.keywords };
@@ -446,16 +551,48 @@ export function renderPageToString(
   if (clean === 'about') {
     const canonical = `${baseUrl}/about`;
     const title = `About Us — Institutional Financial Calculators | ${siteName}`;
-    const desc = `Learn about ${siteName}, our mission, methodology, and CFA/IRS compliance standards.`;
+    const desc = `Learn about ${siteName}, our computational standards, editorial guidelines, and verified 2026 financial engines.`;
     const html = `
-    <div class="min-h-screen bg-stone-50 text-stone-900 p-8 max-w-4xl mx-auto space-y-6">
-      <h1 class="text-3xl font-black text-stone-950">About ${siteName}</h1>
-      <p class="text-sm text-stone-600">Empowering individuals, investors, and professionals with institutional-grade math.</p>
-      <div class="prose prose-stone text-xs sm:text-sm space-y-4 text-stone-700 leading-relaxed">
-        <p>${siteName} is a comprehensive financial intelligence portal offering 56 mathematical calculation engines across personal finance, retirement planning, mortgages, and options analysis.</p>
-        <h2 class="text-lg font-bold text-stone-900">Our Editorial &amp; Computational Standards</h2>
-        <p>Every calculator on ${siteName} is built strictly adhering to verified CFA Institute formulas, IRS statutory limits, and financial mathematics principles.</p>
-      </div>
+    <div class="min-h-screen bg-stone-50 text-stone-900 flex flex-col antialiased">
+      ${renderHeaderHtml(siteName)}
+      <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+        <section class="rounded-3xl bg-gradient-to-br from-stone-900 via-stone-900 to-stone-950 text-white p-8 sm:p-12 border border-stone-800 shadow-xl space-y-4">
+          <span class="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-950 border border-emerald-500/40 text-emerald-300">Our Mission</span>
+          <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">About ${siteName}</h1>
+          <p class="text-sm sm:text-base text-stone-300 max-w-3xl leading-relaxed">
+            Democratizing institutional-grade financial mathematics with 56 high-precision calculators, zero paywalls, zero private data transmission, and 100% transparent algorithmic methodology.
+          </p>
+        </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="p-6 rounded-2xl bg-white border border-stone-200 space-y-2">
+            <h2 class="text-base font-bold text-stone-900">📐 CFA-Compliant Math</h2>
+            <p class="text-xs text-stone-600 leading-relaxed">Every amortization formula, NPV schedule, and Black-Scholes engine adheres strictly to verified CFA Institute standards.</p>
+          </div>
+          <div class="p-6 rounded-2xl bg-white border border-stone-200 space-y-2">
+            <h2 class="text-base font-bold text-stone-900">🛡️ 100% Private &amp; Client-Side</h2>
+            <p class="text-xs text-stone-600 leading-relaxed">Your financial figures never leave your device. All calculations run instantaneously inside your browser engine.</p>
+          </div>
+          <div class="p-6 rounded-2xl bg-white border border-stone-200 space-y-2">
+            <h2 class="text-base font-bold text-stone-900">🏛️ IRS 2026 Calibrated</h2>
+            <p class="text-xs text-stone-600 leading-relaxed">Updated with 2026 401(k) limits, SECURE Act 2.0 catch-up provisions, Roth IRA income phaseouts, and Social Security PIA rules.</p>
+          </div>
+        </div>
+
+        <section class="bg-white rounded-3xl border border-stone-200 p-8 sm:p-10 space-y-4">
+          <h2 class="text-2xl font-black text-stone-900">Our Editorial &amp; Computational Philosophy</h2>
+          <p class="text-xs sm:text-sm text-stone-700 leading-relaxed">
+            Founded by software engineers and quantitative finance analysts, ${siteName} was built to replace ad-bloated, slow, and opaque financial websites. We believe everyone deserves instant, clear, and mathematically accurate financial tools.
+          </p>
+          <div class="pt-4 flex flex-wrap gap-4 text-xs font-semibold">
+            <a href="/category/finance-investment" class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800">Explore Personal Finance →</a>
+            <a href="/category/retirement-calculators" class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800">Explore Retirement Calculators →</a>
+            <a href="/category/loan-mortgage-calculators" class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800">Explore Mortgage Calculators →</a>
+            <a href="/category/stock-calculators" class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800">Explore Stock Calculators →</a>
+          </div>
+        </section>
+      </main>
+      ${renderFooterHtml(siteName, settings)}
     </div>`;
 
     return { title, metaDescription: desc, canonicalUrl: canonical, schemaJsonLd: '', bodyHtml: html, keywords: settings.keywords };
@@ -464,15 +601,56 @@ export function renderPageToString(
   if (clean === 'contact') {
     const canonical = `${baseUrl}/contact`;
     const title = `Contact Us | ${siteName}`;
-    const desc = `Get in touch with the ${siteName} development and research team.`;
+    const desc = `Get in touch with the ${siteName} editorial and engineering team for feedback, calculator requests, or questions.`;
     const html = `
-    <div class="min-h-screen bg-stone-50 text-stone-900 p-8 max-w-4xl mx-auto space-y-6">
-      <h1 class="text-3xl font-black text-stone-950">Contact ${siteName}</h1>
-      <p class="text-sm text-stone-600">Reach out for inquiries, feedback, or formula verification.</p>
-      <div class="p-6 rounded-2xl bg-white border border-stone-200 space-y-3">
-        <p class="text-sm text-stone-700"><strong>Primary Support:</strong> ${settings.supportEmail || 'support@omnicalc.pro'}</p>
-        <p class="text-sm text-stone-700"><strong>General Inquiries:</strong> ${settings.contactEmail || 'contact@omnicalc.pro'}</p>
-      </div>
+    <div class="min-h-screen bg-stone-50 text-stone-900 flex flex-col antialiased">
+      ${renderHeaderHtml(siteName)}
+      <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+        <h1 class="text-3xl sm:text-4xl font-black text-stone-950">Contact Us</h1>
+        <p class="text-xs sm:text-sm text-stone-500">We welcome feedback, formula verification queries, and partnership requests.</p>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div class="p-6 rounded-3xl bg-white border border-stone-200 shadow-sm space-y-3">
+            <h2 class="text-base font-bold text-stone-900">Technical &amp; Formula Support</h2>
+            <p class="text-xs text-stone-600 leading-relaxed">Found an error or have an algorithm calibration recommendation?</p>
+            <p class="text-xs sm:text-sm font-semibold text-emerald-700 font-mono">${settings.supportEmail || 'support@omnicalc.pro'}</p>
+          </div>
+
+          <div class="p-6 rounded-3xl bg-white border border-stone-200 shadow-sm space-y-3">
+            <h2 class="text-base font-bold text-stone-900">General Inquiries &amp; Partnerships</h2>
+            <p class="text-xs text-stone-600 leading-relaxed">For business development, press, or API licensing discussions:</p>
+            <p class="text-xs sm:text-sm font-semibold text-emerald-700 font-mono">${settings.contactEmail || 'contact@omnicalc.pro'}</p>
+          </div>
+        </div>
+
+        <div class="p-6 sm:p-8 rounded-3xl bg-emerald-50 border border-emerald-200 space-y-3">
+          <h2 class="text-base font-bold text-emerald-950">Looking for a specific calculator?</h2>
+          <p class="text-xs text-emerald-900 leading-relaxed">We maintain 56 certified calculators across Personal Finance, Mortgages, Retirement, and Stock Markets. Check our full directory below.</p>
+          <a href="/" class="inline-block px-4 py-2 rounded-xl bg-emerald-700 text-white font-semibold text-xs hover:bg-emerald-800 transition-colors">Browse All 56 Calculators →</a>
+        </div>
+      </main>
+      ${renderFooterHtml(siteName, settings)}
+    </div>`;
+
+    return { title, metaDescription: desc, canonicalUrl: canonical, schemaJsonLd: '', bodyHtml: html, keywords: settings.keywords };
+  }
+
+  if (clean === 'saved') {
+    const canonical = `${baseUrl}/saved`;
+    const title = `Saved Financial Calculations | ${siteName}`;
+    const desc = `View, compare, and export your locally saved financial scenarios and calculation snapshots.`;
+    const html = `
+    <div class="min-h-screen bg-stone-50 text-stone-900 flex flex-col antialiased">
+      ${renderHeaderHtml(siteName)}
+      <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+        <h1 class="text-3xl font-black text-stone-950">Saved Calculations</h1>
+        <p class="text-xs sm:text-sm text-stone-600">Your locally saved scenario snapshots will load here. Calculations are stored strictly on your local device.</p>
+        <div class="p-8 rounded-3xl bg-white border border-stone-200 text-center space-y-4">
+          <p class="text-stone-500 text-xs sm:text-sm">Explore our 56 calculators and click "Save Scenario" to store records for quick offline comparison.</p>
+          <a href="/" class="inline-block px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-colors">Explore All Calculators →</a>
+        </div>
+      </main>
+      ${renderFooterHtml(siteName, settings)}
     </div>`;
 
     return { title, metaDescription: desc, canonicalUrl: canonical, schemaJsonLd: '', bodyHtml: html, keywords: settings.keywords };
@@ -480,65 +658,241 @@ export function renderPageToString(
 
   // 4. HOME PAGE: /
   const homeCanonical = `${baseUrl}/`;
-  const homeTitle = `${settings.siteTitle || 'Financial Calculators - Free Online Finance & Investment Tools'} | ${siteName}`;
+  const homeTitle = `${settings.siteTitle || '56 Financial Calculators - Free Online Personal Finance, Loan & Investment Tools'} | ${siteName}`;
   const homeDescription = settings.siteDescription;
+
+  // Global FAQ for Index Page Schema
+  const homeFaqs = [
+    {
+      q: 'Are all 56 financial calculators on this site 100% free to use?',
+      a: 'Yes, every financial calculator across all 4 categories is completely free, with unlimited calculations, amortization exports, and no registration or subscriptions required.'
+    },
+    {
+      q: 'Are the financial calculations calibrated to 2026 tax and IRS regulations?',
+      a: 'Yes, our 401(k), Roth IRA, Social Security, and tax calculators are calibrated with 2026 statutory limits, SECURE Act 2.0 provisions, and IRS brackets.'
+    },
+    {
+      q: 'Is my personal financial data private and secure?',
+      a: 'Absolutely. All formulas and computations execute 100% in your local browser using client-side WebAssembly/JavaScript. No private salary, mortgage, or investment amounts are sent to external servers.'
+    },
+    {
+      q: 'How are the loan and mortgage amortization schedules computed?',
+      a: 'Our amortization engines use standard standard Truth in Lending Act (Regulation Z) mathematical formulas with compound periodic rate equations and exact monthly interest-principal splits.'
+    }
+  ];
+
+  const homeSchema = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: siteName,
+      url: baseUrl,
+      description: homeDescription,
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: homeFaqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: f.a,
+        },
+      })),
+    },
+  ];
 
   const homeHtml = `
   <div class="min-h-screen bg-stone-50 text-stone-900 flex flex-col antialiased">
-    <header class="bg-white border-b border-stone-200 py-3.5 px-4 sm:px-8 shadow-xs">
-      <div class="max-w-7xl mx-auto flex items-center justify-between">
-        <a href="/" class="flex items-center gap-2 text-stone-900 font-bold text-lg">
-          <span class="p-2 bg-emerald-600 text-white rounded-xl">🧮</span>
-          <span>${siteName}</span>
-        </a>
-      </div>
-    </header>
+    ${renderHeaderHtml(siteName)}
 
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 space-y-10">
-      <section class="rounded-3xl bg-gradient-to-b from-stone-900 via-stone-900 to-stone-950 text-white p-6 sm:p-10 lg:p-12 shadow-xl border border-stone-800 space-y-4">
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
-          56 Certified Financial Calculators
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 space-y-12">
+      <!-- Hero Section with Statistics -->
+      <section class="rounded-3xl bg-gradient-to-b from-stone-900 via-stone-900 to-stone-950 text-white p-6 sm:p-12 lg:p-16 shadow-xl border border-stone-800 space-y-6 text-center sm:text-left">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-950 border border-emerald-500/40 text-emerald-300 text-xs font-semibold">
+          <span>✨ 56 Institutional Calculation Engines • 2026 Edition</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight max-w-4xl">
+          Free Financial &amp; Investment Calculators
         </h1>
-        <p class="text-sm sm:text-base text-stone-300 max-w-2xl leading-relaxed">${settings.siteDescription}</p>
+        <p class="text-sm sm:text-base text-stone-300 max-w-3xl leading-relaxed">
+          Compute accurate mortgage payments, 401(k) retirement growth, compound interest, stock profits, and loan payoff strategies with CFA-compliant mathematical accuracy.
+        </p>
+
+        <!-- Stats Bar -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-stone-800 text-left">
+          <div class="p-3 rounded-xl bg-stone-800/60 border border-stone-700/50">
+            <span class="text-xl sm:text-2xl font-black text-emerald-400">56</span>
+            <span class="text-xs text-stone-300 block">Verified Calculators</span>
+          </div>
+          <div class="p-3 rounded-xl bg-stone-800/60 border border-stone-700/50">
+            <span class="text-xl sm:text-2xl font-black text-emerald-400">4</span>
+            <span class="text-xs text-stone-300 block">Core Categories</span>
+          </div>
+          <div class="p-3 rounded-xl bg-stone-800/60 border border-stone-700/50">
+            <span class="text-xl sm:text-2xl font-black text-emerald-400">100%</span>
+            <span class="text-xs text-stone-300 block">Free &amp; Client-Side</span>
+          </div>
+          <div class="p-3 rounded-xl bg-stone-800/60 border border-stone-700/50">
+            <span class="text-xl sm:text-2xl font-black text-emerald-400">2026</span>
+            <span class="text-xs text-stone-300 block">IRS &amp; CFA Calibrated</span>
+          </div>
+        </div>
       </section>
 
-      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        ${CATEGORIES.map(
-          (c) => `
-          <a href="/category/${c.slug}" class="p-5 rounded-2xl bg-white border border-stone-200 hover:border-emerald-500 shadow-xs hover:shadow-md transition-all block">
-            <h2 class="text-sm font-bold text-stone-900 mb-1">${c.name}</h2>
-            <p class="text-xs text-stone-500 line-clamp-2">${c.description}</p>
-            <div class="mt-3 text-xs font-semibold text-emerald-700">${c.calculatorsCount} Calculators →</div>
-          </a>`
-        ).join('')}
-      </section>
-
+      <!-- 4 Core Categories Grid -->
       <section class="space-y-4">
-        <h2 class="text-xl font-bold text-stone-900">All 56 Financial Models &amp; Calculators</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          ${ALL_CALCULATORS.map(
-            (c) => `
-            <a href="/calculator/${c.slug}" class="p-4 rounded-xl bg-white border border-stone-200 hover:border-emerald-500 shadow-2xs transition-all block">
-              <h3 class="text-sm font-bold text-stone-900">${c.name}</h3>
-              <p class="text-xs text-stone-500 mt-1 line-clamp-2">${c.shortDescription}</p>
-            </a>`
-          ).join('')}
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl sm:text-2xl font-black text-stone-900 tracking-tight">Browse Financial Categories</h2>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          ${CATEGORIES.map((c) => {
+            const iconEmoji =
+              c.slug === 'finance-investment'
+                ? '📈'
+                : c.slug === 'retirement-calculators'
+                ? '🛡️'
+                : c.slug === 'loan-mortgage-calculators'
+                ? '🏠'
+                : '📊';
+            return `
+            <a href="/category/${c.slug}" class="p-5 rounded-3xl bg-white border border-stone-200 hover:border-emerald-500 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
+              <div class="space-y-2">
+                <span class="text-2xl block">${iconEmoji}</span>
+                <h3 class="text-base font-bold text-stone-900 group-hover:text-emerald-700 transition-colors">${c.name}</h3>
+                <p class="text-xs text-stone-500 leading-relaxed line-clamp-2">${c.description}</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-emerald-700">
+                <span>${c.calculatorsCount} Engines</span>
+                <span>→</span>
+              </div>
+            </a>`;
+          }).join('')}
+        </div>
+      </section>
+
+      <!-- Comprehensive Directory of All 56 Calculators -->
+      <section class="space-y-6">
+        <div class="border-b border-stone-200 pb-3 flex items-center justify-between">
+          <h2 class="text-xl sm:text-2xl font-black text-stone-900 tracking-tight">Complete Directory of All 56 Financial Tools</h2>
+          <span class="text-xs font-semibold text-stone-500">Click any tool to open</span>
+        </div>
+
+        <div class="space-y-8">
+          ${CATEGORIES.map((cat) => {
+            const catCalcs = ALL_CALCULATORS.filter((c) => c.category === cat.slug);
+            const iconEmoji =
+              cat.slug === 'finance-investment'
+                ? '📈'
+                : cat.slug === 'retirement-calculators'
+                ? '🛡️'
+                : cat.slug === 'loan-mortgage-calculators'
+                ? '🏠'
+                : '📊';
+            return `
+            <div class="space-y-4">
+              <div class="flex items-center gap-2">
+                <span class="text-lg">${iconEmoji}</span>
+                <h3 class="text-lg font-bold text-stone-900">${cat.name} (${catCalcs.length})</h3>
+                <a href="/category/${cat.slug}" class="text-xs font-semibold text-emerald-700 hover:underline ml-2">View Category Guide →</a>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                ${catCalcs
+                  .map(
+                    (c) => `
+                  <a href="/calculator/${c.slug}" class="p-4 rounded-2xl bg-white border border-stone-200 hover:border-emerald-500 hover:shadow-xs transition-all flex flex-col justify-between group">
+                    <div class="space-y-1.5">
+                      <div class="flex items-center justify-between gap-2">
+                        <h4 class="text-sm font-bold text-stone-900 group-hover:text-emerald-700 transition-colors">${c.name}</h4>
+                        ${c.badge ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800">${c.badge}</span>` : ''}
+                      </div>
+                      <p class="text-xs text-stone-500 line-clamp-2 leading-relaxed">${c.shortDescription}</p>
+                    </div>
+                    <div class="mt-3 pt-2 text-[11px] font-semibold text-emerald-700 flex items-center justify-between">
+                      <span>Calculate Now</span>
+                      <span>→</span>
+                    </div>
+                  </a>`
+                  )
+                  .join('')}
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </section>
+
+      <!-- Featured Educational Guides / Articles -->
+      <section class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-10 space-y-6 shadow-sm">
+        <div class="border-b border-stone-100 pb-4">
+          <h2 class="text-2xl font-black text-stone-900 tracking-tight">Financial Modeling &amp; Calculation Articles</h2>
+          <p class="text-xs sm:text-sm text-stone-500 mt-1">In-depth mathematical breakdowns and strategic guides authored for investors and borrowers.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <article class="p-5 rounded-2xl bg-stone-50 border border-stone-200 space-y-3">
+            <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">Mortgage &amp; Real Estate</span>
+            <h3 class="text-base font-bold text-stone-900">How Extra Principal Payments Reduce Total Loan Interest</h3>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Applying even $100 extra per month toward a 30-year fixed mortgage directly lowers the compound interest baseline, effectively knocking 4 to 6 years off your amortization term.
+            </p>
+            <a href="/calculator/mortgage-calculator" class="text-xs font-semibold text-emerald-700 hover:underline block pt-1">Try Mortgage Calculator →</a>
+          </article>
+
+          <article class="p-5 rounded-2xl bg-stone-50 border border-stone-200 space-y-3">
+            <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">Retirement Planning</span>
+            <h3 class="text-base font-bold text-stone-900">Traditional 401(k) vs. Roth IRA: 2026 Tax Optimization</h3>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Comparing upfront pre-tax deductions against tax-free compounding withdrawals at retirement. Learn when to switch contributions based on marginal tax brackets.
+            </p>
+            <a href="/calculator/401k-calculator" class="text-xs font-semibold text-emerald-700 hover:underline block pt-1">Try 401(k) Calculator →</a>
+          </article>
+
+          <article class="p-5 rounded-2xl bg-stone-50 border border-stone-200 space-y-3">
+            <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">Compound Growth</span>
+            <h3 class="text-base font-bold text-stone-900">The Mathematics of Compound Interest: Compounding Frequencies</h3>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Understanding the difference between annual, monthly, daily, and continuous compounding formulas: A = P(1 + r/n)^(nt).
+            </p>
+            <a href="/calculator/compound-interest-calculator" class="text-xs font-semibold text-emerald-700 hover:underline block pt-1">Try Compound Interest Calculator →</a>
+          </article>
+
+          <article class="p-5 rounded-2xl bg-stone-50 border border-stone-200 space-y-3">
+            <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">Stock Valuation</span>
+            <h3 class="text-base font-bold text-stone-900">Risk-Adjusted Return Metrics: Sharpe &amp; Treynor Ratios</h3>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Evaluating equity performance relative to the risk-free rate of return and market volatility benchmark standard deviations.
+            </p>
+            <a href="/calculator/stock-profit-calculator" class="text-xs font-semibold text-emerald-700 hover:underline block pt-1">Try Stock Profit Calculator →</a>
+          </article>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-10 space-y-6 shadow-sm">
+        <h2 class="text-2xl font-black text-stone-900 tracking-tight">Frequently Asked Questions</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${homeFaqs
+            .map(
+              (faq) => `
+            <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
+              <h3 class="text-sm font-bold text-stone-900">${faq.q}</h3>
+              <p class="text-xs text-stone-600 leading-relaxed">${faq.a}</p>
+            </div>`
+            )
+            .join('')}
         </div>
       </section>
     </main>
+
+    ${renderFooterHtml(siteName, settings)}
   </div>`;
 
   return {
     title: homeTitle,
     metaDescription: homeDescription,
     canonicalUrl: homeCanonical,
-    schemaJsonLd: JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      name: siteName,
-      url: baseUrl,
-      description: homeDescription,
-    }),
+    schemaJsonLd: JSON.stringify(homeSchema),
     bodyHtml: homeHtml,
     keywords: settings.keywords,
   };
