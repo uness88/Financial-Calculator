@@ -74,7 +74,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   customFooterNote: '© 2026 OmniCalc Pro Financial Suite. All rights reserved.',
   adminSecretPath: 'admin-settings',
   enablePinProtection: true,
-  adminSecurityPin: '1234',
+  adminSecurityPin: '010203',
 
   // SEO & Webmaster defaults
   canonicalBaseUrl: 'https://omnicalc.pro',

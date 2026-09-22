@@ -53,6 +53,10 @@ async function buildStaticPages() {
     return html;
   }
 
+  // 0. Generate Home Page (dist/index.html)
+  const homeHtml = generateHtml('/');
+  fs.writeFileSync(indexHtmlPath, homeHtml, 'utf-8');
+
   // 1. Generate Category Pages
   for (const cat of CATEGORIES) {
     const catDir = path.join(distDir, 'category', cat.slug);

@@ -131,7 +131,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
 
   const handleUnlockWithPin = (e: React.FormEvent) => {
     e.preventDefault();
-    const correctPin = settings.adminSecurityPin || '1234';
+    const correctPin = settings.adminSecurityPin || '010203';
     if (enteredPin.trim() === correctPin.trim()) {
       setIsUnlocked(true);
       setPinError('');
@@ -139,7 +139,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
         sessionStorage.setItem('omnicalc_admin_auth', 'true');
       } catch {}
     } else {
-      setPinError('Incorrect PIN code. Please check your passcode and try again (Default PIN: 1234).');
+      setPinError('Incorrect PIN passcode. Access denied.');
     }
   };
 
@@ -338,24 +338,20 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
               <input
                 id="admin-pin-input"
                 type="password"
-                maxLength={8}
+                maxLength={12}
                 value={enteredPin}
                 onChange={(e) => {
                   setEnteredPin(e.target.value);
                   setPinError('');
                 }}
-                placeholder="Enter PIN (e.g. 1234)"
+                placeholder="••••••"
                 autoFocus
                 className="w-full text-center tracking-widest text-2xl font-mono py-3.5 px-4 bg-stone-50 border border-stone-300 rounded-2xl focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-600 focus:bg-white transition-all text-stone-900"
               />
-              {pinError ? (
+              {pinError && (
                 <p className="text-xs text-rose-600 font-medium mt-2 flex items-center justify-center gap-1">
                   <AlertCircle className="w-3.5 h-3.5" />
                   <span>{pinError}</span>
-                </p>
-              ) : (
-                <p className="text-[11px] text-stone-400 mt-2">
-                  Default PIN code: <strong className="text-stone-700 font-mono">1234</strong>
                 </p>
               )}
             </div>
@@ -1602,7 +1598,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
                       maxLength={8}
                       value={formState.adminSecurityPin}
                       onChange={(e) => setFormState({ ...formState, adminSecurityPin: e.target.value })}
-                      placeholder="e.g. 1234"
+                      placeholder="e.g. 010203"
                       className="w-48 px-3.5 py-2.5 bg-white border border-stone-300 rounded-xl text-stone-900 text-sm font-mono tracking-widest focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all text-center"
                     />
                   </div>
