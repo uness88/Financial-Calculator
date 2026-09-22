@@ -2,6 +2,8 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
+import { renderPageToString } from './src/utils/ssrRenderer';
+import { DEFAULT_SITE_SETTINGS } from './src/types/siteSettings';
 
 const app = express();
 const PORT = 3000;
@@ -117,9 +119,40 @@ app.post('/api/settings', (req, res) => {
   res.json({ success: true, settings: merged });
 });
 
-// Helper to inject custom <head> and AdSense code into raw HTML
-function injectHeadIntoHtml(html: string, settings: Record<string, any>): string {
-  let headSnippet = '';
+// Helper to inject custom <head>, SSR SEO tags, structured data, and SSR pre-rendered HTML
+function processHtmlWithSSR(html: string, urlPath: string, rawSettings: Record<string, any>): string {
+  const settings = { ...DEFAULT_SITE_SETTINGS, ...rawSettings };
+  const ssr = renderPageToString(urlPath, settings);
+
+  let processed = html;
+
+  // 1. Replace or inject <title>
+  if (ssr.title) {
+    if (processed.includes('<title>')) {
+      processed = processed.replace(/<title>[\s\S]*?<\/title>/i, `<title>${ssr.title}</title>`);
+    } else if (processed.includes('</head>')) {
+      processed = processed.replace('</head>', `<title>${ssr.title}</title>\n</head>`);
+    }
+  }
+
+  // 2. Head meta tags & structured data
+  let headSnippet = `\n  <meta name="description" content="${ssr.metaDescription || settings.siteDescription}" />\n  <link rel="canonical" href="${ssr.canonicalUrl}" />\n  <meta property="og:title" content="${ssr.title}" />\n  <meta property="og:description" content="${ssr.metaDescription || settings.siteDescription}" />\n  <meta property="og:url" content="${ssr.canonicalUrl}" />\n  <meta property="og:type" content="website" />\n`;
+
+  if (ssr.keywords) {
+    headSnippet += `  <meta name="keywords" content="${ssr.keywords}" />\n`;
+  }
+
+  if (ssr.schemaJsonLd) {
+    headSnippet += `  <script type="application/ld+json">\n${ssr.schemaJsonLd}\n  </script>\n`;
+  }
+
+  // Google Search Console / Bing meta verification
+  if (settings.googleSiteVerification) {
+    headSnippet += `  <meta name="google-site-verification" content="${settings.googleSiteVerification}" />\n`;
+  }
+  if (settings.bingSiteVerification) {
+    headSnippet += `  <meta name="msvalidate.01" content="${settings.bingSiteVerification}" />\n`;
+  }
 
   // AdSense script if auto ads enabled
   if (settings.adsenseAutoAdsEnabled && settings.adsensePublisherId) {
@@ -127,27 +160,27 @@ function injectHeadIntoHtml(html: string, settings: Record<string, any>): string
       ? settings.adsensePublisherId.trim()
       : `ca-pub-${settings.adsensePublisherId.trim().replace(/^pub-/, '')}`;
 
-    headSnippet += `\n<!-- Google AdSense Auto-Ads Tag -->\n<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pubId}" crossorigin="anonymous"></script>\n`;
-  }
-
-  // Google Search Console / Bing meta verification
-  if (settings.googleSiteVerification) {
-    headSnippet += `\n<meta name="google-site-verification" content="${settings.googleSiteVerification}" />\n`;
-  }
-  if (settings.bingSiteVerification) {
-    headSnippet += `\n<meta name="msvalidate.01" content="${settings.bingSiteVerification}" />\n`;
+    headSnippet += `  <!-- Google AdSense Auto-Ads Tag -->\n  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pubId}" crossorigin="anonymous"></script>\n`;
   }
 
   // Custom user head code
   if (settings.customHeadCode && settings.customHeadCode.trim()) {
-    headSnippet += `\n<!-- Injected Custom Head Code -->\n${settings.customHeadCode}\n`;
+    headSnippet += `  <!-- Injected Custom Head Code -->\n${settings.customHeadCode}\n`;
   }
 
-  if (headSnippet && html.includes('</head>')) {
-    return html.replace('</head>', `${headSnippet}\n</head>`);
+  if (processed.includes('</head>')) {
+    processed = processed.replace('</head>', `${headSnippet}</head>`);
   }
 
-  return html;
+  // 3. Inject SSR body into root container for zero-JS crawlers (Googlebot, Bing, AdSense)
+  if (ssr.bodyHtml && processed.includes('<div id="root"></div>')) {
+    processed = processed.replace(
+      '<div id="root"></div>',
+      `<div id="root">${ssr.bodyHtml}</div>`
+    );
+  }
+
+  return processed;
 }
 
 async function startServer() {
@@ -159,7 +192,7 @@ async function startServer() {
 
     app.use(vite.middlewares);
 
-    // Development HTML serving with custom head injection
+    // Development HTML serving with full SSR & dynamic head injection
     app.use('*', async (req, res, next) => {
       const url = req.originalUrl;
       try {
@@ -168,9 +201,9 @@ async function startServer() {
         template = await vite.transformIndexHtml(url, template);
 
         const settings = getStoredSettings();
-        const finalHtml = injectHeadIntoHtml(template, settings);
+        const finalHtml = processHtmlWithSSR(template, url, settings);
 
-        res.status(200).set({ 'Content-Type': 'text/html' }).end(finalHtml);
+        res.status(200).set({ 'Content-Type': 'text/html; charset=utf-8' }).end(finalHtml);
       } catch (e: any) {
         vite.ssrFixStacktrace(e);
         next(e);
@@ -185,9 +218,9 @@ async function startServer() {
         const indexHtmlPath = path.join(distPath, 'index.html');
         let html = fs.readFileSync(indexHtmlPath, 'utf-8');
         const settings = getStoredSettings();
-        const finalHtml = injectHeadIntoHtml(html, settings);
+        const finalHtml = processHtmlWithSSR(html, req.originalUrl, settings);
 
-        res.status(200).set({ 'Content-Type': 'text/html' }).send(finalHtml);
+        res.status(200).set({ 'Content-Type': 'text/html; charset=utf-8' }).send(finalHtml);
       } catch (err) {
         res.sendFile(path.join(distPath, 'index.html'));
       }
