@@ -37,6 +37,9 @@ export function renderPageToString(
       const metaDescription = calc.metaDescription || calc.shortDescription;
       const keywords = calc.keywords ? calc.keywords.join(', ') : settings.keywords;
       const howToArticle: PageGuideArticle | undefined = SITEWIDE_PAGE_GUIDES[calc.slug];
+      const relatedCalcs = (calc.relatedCalculatorSlugs || [])
+        .map((s) => getCalculatorBySlug(s))
+        .filter((c): c is NonNullable<typeof c> => Boolean(c));
 
       // Schema.org Structured Data
       const schemaData: Record<string, any>[] = [
@@ -174,6 +177,24 @@ export function renderPageToString(
               : ''
           }
 
+          <!-- Practical Worked Example -->
+          ${
+            calc.example
+              ? `
+          <section class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-10 space-y-4 shadow-sm">
+            <h2 class="text-xl sm:text-2xl font-black text-stone-900">Worked Practical Example: ${calc.example.scenarioTitle}</h2>
+            <p class="text-xs sm:text-sm text-stone-600">${calc.example.description}</p>
+            <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
+              <h3 class="text-xs font-bold text-stone-900 uppercase">Step-by-Step Calculation:</h3>
+              <ol class="list-decimal list-inside space-y-1.5 text-xs sm:text-sm text-stone-700">
+                ${calc.example.stepByStep.map((s) => `<li>${s}</li>`).join('')}
+              </ol>
+              <p class="pt-2 text-xs sm:text-sm font-bold text-emerald-800">Final Outcome: ${calc.example.finalOutcome}</p>
+            </div>
+          </section>`
+              : ''
+          }
+
           <!-- In-depth Editorial Guide / How-To Article (1,000+ words SEO authority) -->
           ${
             howToArticle
@@ -230,6 +251,27 @@ export function renderPageToString(
                   <h3 class="text-sm sm:text-base font-bold text-stone-900">${faq.question}</h3>
                   <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">${faq.answer}</p>
                 </div>`
+                )
+                .join('')}
+            </div>
+          </section>`
+              : ''
+          }
+
+          <!-- Related Calculators -->
+          ${
+            relatedCalcs.length > 0
+              ? `
+          <section class="space-y-4">
+            <h2 class="text-xl font-bold text-stone-900">Related Financial Tools &amp; Calculators</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${relatedCalcs
+                .map(
+                  (rc) => `
+                <a href="/calculator/${rc.slug}" class="p-4 rounded-2xl bg-white border border-stone-200 hover:border-emerald-500 shadow-2xs transition-all block">
+                  <h3 class="text-sm font-bold text-stone-900">${rc.name}</h3>
+                  <p class="text-xs text-stone-500 mt-1 line-clamp-2">${rc.shortDescription}</p>
+                </a>`
                 )
                 .join('')}
             </div>
@@ -358,7 +400,85 @@ export function renderPageToString(
     }
   }
 
-  // 3. HOME PAGE: /
+  // 3. STATIC PAGES (/privacy, /terms, /about, /contact)
+  if (clean === 'privacy') {
+    const canonical = `${baseUrl}/privacy`;
+    const title = `Privacy Policy | ${siteName}`;
+    const desc = `Privacy policy and user data protections for ${siteName}. Zero tracking, client-side execution, and GDPR/CCPA compliance.`;
+    const html = `
+    <div class="min-h-screen bg-stone-50 text-stone-900 p-8 max-w-4xl mx-auto space-y-6">
+      <h1 class="text-3xl font-black text-stone-950">Privacy Policy</h1>
+      <p class="text-sm text-stone-600">Last updated: January 2026. Official privacy notice of ${siteName}.</p>
+      <div class="prose prose-stone text-xs sm:text-sm space-y-4 text-stone-700 leading-relaxed">
+        <p>At ${siteName}, accessible from ${baseUrl}, the privacy of our visitors is of paramount importance. This Privacy Policy document outlines the types of information collected and recorded by ${siteName} and how we protect your personal privacy.</p>
+        <h2 class="text-lg font-bold text-stone-900">1. 100% Client-Side Computation</h2>
+        <p>All financial inputs, loan parameters, salary details, and investment scenarios are calculated directly in your local browser. No financial numbers or private inputs are transmitted to external servers.</p>
+        <h2 class="text-lg font-bold text-stone-900">2. Google AdSense &amp; Cookie Consent</h2>
+        <p>We work with Google AdSense to serve non-intrusive advertisements. Google uses cookies to serve ads based on prior visits. You may opt out of personalized advertising by visiting Google Ad Settings.</p>
+        <h2 class="text-lg font-bold text-stone-900">3. Contact Support</h2>
+        <p>For inquiries regarding this privacy statement, email us at ${settings.supportEmail || 'support@omnicalc.pro'}.</p>
+      </div>
+    </div>`;
+
+    return { title, metaDescription: desc, canonicalUrl: canonical, schemaJsonLd: '', bodyHtml: html, keywords: settings.keywords };
+  }
+
+  if (clean === 'terms') {
+    const canonical = `${baseUrl}/terms`;
+    const title = `Terms of Use & Financial Disclaimers | ${siteName}`;
+    const desc = `Terms of use, SECURE 2.0 notices, and educational financial disclaimers for ${siteName}.`;
+    const html = `
+    <div class="min-h-screen bg-stone-50 text-stone-900 p-8 max-w-4xl mx-auto space-y-6">
+      <h1 class="text-3xl font-black text-stone-950">Terms of Use &amp; Financial Disclaimers</h1>
+      <p class="text-sm text-stone-600">Last updated: January 2026.</p>
+      <div class="prose prose-stone text-xs sm:text-sm space-y-4 text-stone-700 leading-relaxed">
+        <p>By using ${siteName} (${baseUrl}), you accept these terms in full. The financial calculators and models provided are strictly for educational and informational purposes.</p>
+        <h2 class="text-lg font-bold text-stone-900">1. Not Certified Financial Advice</h2>
+        <p>Calculations, mathematical models, and projections provided on this site do not constitute certified financial, investment, legal, tax, or mortgage underwriting advice. Consult a Certified Financial Planner (CFP®), CPA, or licensed mortgage officer before executing financial commitments.</p>
+        <h2 class="text-lg font-bold text-stone-900">2. Accuracy &amp; Regulatory Conformance</h2>
+        <p>While our algorithms are calibrated against IRS 2026 contribution limits and SECURE Act 2.0 regulations, users must verify real-time terms with their respective institutions.</p>
+      </div>
+    </div>`;
+
+    return { title, metaDescription: desc, canonicalUrl: canonical, schemaJsonLd: '', bodyHtml: html, keywords: settings.keywords };
+  }
+
+  if (clean === 'about') {
+    const canonical = `${baseUrl}/about`;
+    const title = `About Us — Institutional Financial Calculators | ${siteName}`;
+    const desc = `Learn about ${siteName}, our mission, methodology, and CFA/IRS compliance standards.`;
+    const html = `
+    <div class="min-h-screen bg-stone-50 text-stone-900 p-8 max-w-4xl mx-auto space-y-6">
+      <h1 class="text-3xl font-black text-stone-950">About ${siteName}</h1>
+      <p class="text-sm text-stone-600">Empowering individuals, investors, and professionals with institutional-grade math.</p>
+      <div class="prose prose-stone text-xs sm:text-sm space-y-4 text-stone-700 leading-relaxed">
+        <p>${siteName} is a comprehensive financial intelligence portal offering 56 mathematical calculation engines across personal finance, retirement planning, mortgages, and options analysis.</p>
+        <h2 class="text-lg font-bold text-stone-900">Our Editorial &amp; Computational Standards</h2>
+        <p>Every calculator on ${siteName} is built strictly adhering to verified CFA Institute formulas, IRS statutory limits, and financial mathematics principles.</p>
+      </div>
+    </div>`;
+
+    return { title, metaDescription: desc, canonicalUrl: canonical, schemaJsonLd: '', bodyHtml: html, keywords: settings.keywords };
+  }
+
+  if (clean === 'contact') {
+    const canonical = `${baseUrl}/contact`;
+    const title = `Contact Us | ${siteName}`;
+    const desc = `Get in touch with the ${siteName} development and research team.`;
+    const html = `
+    <div class="min-h-screen bg-stone-50 text-stone-900 p-8 max-w-4xl mx-auto space-y-6">
+      <h1 class="text-3xl font-black text-stone-950">Contact ${siteName}</h1>
+      <p class="text-sm text-stone-600">Reach out for inquiries, feedback, or formula verification.</p>
+      <div class="p-6 rounded-2xl bg-white border border-stone-200 space-y-3">
+        <p class="text-sm text-stone-700"><strong>Primary Support:</strong> ${settings.supportEmail || 'support@omnicalc.pro'}</p>
+        <p class="text-sm text-stone-700"><strong>General Inquiries:</strong> ${settings.contactEmail || 'contact@omnicalc.pro'}</p>
+      </div>
+    </div>`;
+
+    return { title, metaDescription: desc, canonicalUrl: canonical, schemaJsonLd: '', bodyHtml: html, keywords: settings.keywords };
+  }
+
+  // 4. HOME PAGE: /
   const homeCanonical = `${baseUrl}/`;
   const homeTitle = `${settings.siteTitle || 'Financial Calculators - Free Online Finance & Investment Tools'} | ${siteName}`;
   const homeDescription = settings.siteDescription;
