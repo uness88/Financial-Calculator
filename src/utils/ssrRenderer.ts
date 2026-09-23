@@ -1,6 +1,7 @@
 import { ALL_CALCULATORS, getCalculatorBySlug } from '../data/calculatorRegistry';
 import { CATEGORIES, getCategoryBySlug } from '../config/categories';
 import { CATEGORY_GUIDES, SITEWIDE_PAGE_GUIDES, PageGuideArticle } from '../data/pageGuides';
+import { getCalculatorHowToUseArticle, HowToUseArticle } from '../data/calculatorHowToUse';
 import { DEFAULT_SITE_SETTINGS, SiteSettings } from '../types/siteSettings';
 
 /**
@@ -151,7 +152,7 @@ export function renderPageToString(
       const title = `${calc.seoTitle || calc.name} | ${siteName}`;
       const metaDescription = calc.metaDescription || calc.shortDescription;
       const keywords = calc.keywords ? calc.keywords.join(', ') : settings.keywords;
-      const howToArticle: PageGuideArticle | undefined = SITEWIDE_PAGE_GUIDES[calc.slug];
+      const howToArticle: HowToUseArticle = getCalculatorHowToUseArticle(calc);
       const relatedCalcs = (calc.relatedCalculatorSlugs || [])
         .map((s) => getCalculatorBySlug(s))
         .filter((c): c is NonNullable<typeof c> => Boolean(c));
@@ -361,26 +362,37 @@ export function renderPageToString(
               : ''
           }
 
-          <!-- In-depth Editorial Guide / How-To Article (1,000+ words SEO authority) -->
+          <!-- In-depth Editorial Guide / Comprehensive User Guide & How-To Manual (1,000+ words SEO authority) -->
           ${
             howToArticle
               ? `
           <article class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-10 space-y-8 shadow-sm">
-            <div class="border-b border-stone-100 pb-4">
+            <div class="border-b border-stone-100 pb-4 space-y-2">
+              <div class="flex items-center gap-2 text-emerald-800 font-bold text-xs tracking-wider uppercase">
+                <span>📖 Comprehensive User Guide &amp; How-To Manual</span>
+              </div>
               <h2 class="text-xl sm:text-2xl lg:text-3xl font-black text-stone-900 tracking-tight">${howToArticle.title}</h2>
-              <p class="text-xs sm:text-sm text-stone-500 mt-1">${howToArticle.subtitle || ''} • <span class="text-emerald-700 font-semibold">${howToArticle.estimatedReadTime || '5 min read'}</span></p>
+              <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">${howToArticle.subtitle || ''}</p>
+              <div class="flex items-center gap-3 text-xs text-stone-500 pt-1">
+                <span class="font-medium text-emerald-700">⏱️ ${howToArticle.estimatedReadTime || '5 min read'}</span>
+                <span>•</span>
+                <span>📄 ${howToArticle.characterCount ? howToArticle.characterCount.toLocaleString('en-US') + ' characters' : 'Comprehensive Guide'}</span>
+              </div>
             </div>
 
             <div class="space-y-6 text-stone-700 leading-relaxed text-xs sm:text-sm">
               ${howToArticle.sections
                 .map(
-                  (sec) => `
+                  (sec, sIdx) => `
                 <div class="space-y-3">
-                  <h3 class="text-base sm:text-lg font-bold text-stone-900">${sec.heading}</h3>
-                  <p class="leading-relaxed">${sec.content}</p>
+                  <h3 class="text-base sm:text-lg font-bold text-stone-900 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center justify-center shrink-0">${sIdx + 1}</span>
+                    <span>${sec.heading}</span>
+                  </h3>
+                  <p class="leading-relaxed pl-8">${sec.content}</p>
                   ${
                     sec.bulletPoints && sec.bulletPoints.length > 0
-                      ? `<ul class="list-disc list-inside space-y-1.5 pl-2 text-stone-600 font-medium">
+                      ? `<ul class="list-disc list-inside space-y-1.5 pl-8 text-stone-600 font-medium">
                         ${sec.bulletPoints.map((bp: string) => `<li>${bp}</li>`).join('')}
                       </ul>`
                       : ''
@@ -554,6 +566,7 @@ export function renderPageToString(
     const canonical = `${baseUrl}/privacy`;
     const title = `Privacy Policy | ${siteName}`;
     const desc = `Privacy policy and user data protections for ${siteName}. Zero tracking, client-side execution, and GDPR/CCPA compliance.`;
+    const guide: PageGuideArticle | undefined = SITEWIDE_PAGE_GUIDES['privacy'];
     const html = `
     <div class="min-h-screen bg-stone-50 text-stone-900 flex flex-col antialiased">
       ${renderHeaderHtml(siteName)}
@@ -576,6 +589,44 @@ export function renderPageToString(
           <h2 class="text-lg font-bold text-stone-900">4. Contact Privacy Officer</h2>
           <p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us at <a href="/contact" class="text-emerald-700 underline">${settings.supportEmail || 'support@omnicalc.pro'}</a>.</p>
         </div>
+
+        ${
+          guide
+            ? `
+        <article class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-10 space-y-6 shadow-sm">
+          <div class="border-b border-stone-100 pb-4 space-y-1">
+            <span class="text-emerald-800 font-bold text-xs uppercase tracking-wider">Comprehensive Privacy Guide</span>
+            <h2 class="text-xl sm:text-2xl font-black text-stone-900">${guide.title}</h2>
+            <p class="text-xs text-stone-500">${guide.subtitle} • <span class="text-emerald-700 font-semibold">${guide.estimatedReadTime}</span></p>
+          </div>
+          <div class="space-y-4 text-xs sm:text-sm text-stone-700 leading-relaxed">
+            ${guide.sections
+              .map(
+                (sec) => `
+              <div class="space-y-2">
+                <h3 class="text-base font-bold text-stone-900">${sec.heading}</h3>
+                <p>${sec.content}</p>
+                ${
+                  sec.bulletPoints && sec.bulletPoints.length > 0
+                    ? `<ul class="list-disc list-inside space-y-1 pl-2 text-stone-600">
+                      ${sec.bulletPoints.map((bp) => `<li>${bp}</li>`).join('')}
+                    </ul>`
+                    : ''
+                }
+              </div>`
+              )
+              .join('')}
+            ${
+              guide.summaryTakeaway
+                ? `<div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 text-xs sm:text-sm">
+                  <strong>Takeaway:</strong> ${guide.summaryTakeaway}
+                </div>`
+                : ''
+            }
+          </div>
+        </article>`
+            : ''
+        }
       </main>
       ${renderFooterHtml(siteName, settings)}
     </div>`;
@@ -587,6 +638,7 @@ export function renderPageToString(
     const canonical = `${baseUrl}/terms`;
     const title = `Terms of Use & Financial Disclaimers | ${siteName}`;
     const desc = `Terms of use, SECURE Act 2.0 notices, and educational financial disclaimers for ${siteName}.`;
+    const guide: PageGuideArticle | undefined = SITEWIDE_PAGE_GUIDES['terms'];
     const html = `
     <div class="min-h-screen bg-stone-50 text-stone-900 flex flex-col antialiased">
       ${renderHeaderHtml(siteName)}
@@ -606,6 +658,44 @@ export function renderPageToString(
           <h2 class="text-lg font-bold text-stone-900">3. Limitation of Liability</h2>
           <p>In no event shall ${siteName} or its developers be liable for any direct, indirect, incidental, or consequential damages resulting from the use or inability to use the tools on this site.</p>
         </div>
+
+        ${
+          guide
+            ? `
+        <article class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-10 space-y-6 shadow-sm">
+          <div class="border-b border-stone-100 pb-4 space-y-1">
+            <span class="text-emerald-800 font-bold text-xs uppercase tracking-wider">Comprehensive Terms Guide</span>
+            <h2 class="text-xl sm:text-2xl font-black text-stone-900">${guide.title}</h2>
+            <p class="text-xs text-stone-500">${guide.subtitle} • <span class="text-emerald-700 font-semibold">${guide.estimatedReadTime}</span></p>
+          </div>
+          <div class="space-y-4 text-xs sm:text-sm text-stone-700 leading-relaxed">
+            ${guide.sections
+              .map(
+                (sec) => `
+              <div class="space-y-2">
+                <h3 class="text-base font-bold text-stone-900">${sec.heading}</h3>
+                <p>${sec.content}</p>
+                ${
+                  sec.bulletPoints && sec.bulletPoints.length > 0
+                    ? `<ul class="list-disc list-inside space-y-1 pl-2 text-stone-600">
+                      ${sec.bulletPoints.map((bp) => `<li>${bp}</li>`).join('')}
+                    </ul>`
+                    : ''
+                }
+              </div>`
+              )
+              .join('')}
+            ${
+              guide.summaryTakeaway
+                ? `<div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 text-xs sm:text-sm">
+                  <strong>Takeaway:</strong> ${guide.summaryTakeaway}
+                </div>`
+                : ''
+            }
+          </div>
+        </article>`
+            : ''
+        }
       </main>
       ${renderFooterHtml(siteName, settings)}
     </div>`;
@@ -617,6 +707,7 @@ export function renderPageToString(
     const canonical = `${baseUrl}/about`;
     const title = `About Us — Institutional Financial Calculators | ${siteName}`;
     const desc = `Learn about ${siteName}, our computational standards, editorial guidelines, and verified 2026 financial engines.`;
+    const guide: PageGuideArticle | undefined = SITEWIDE_PAGE_GUIDES['about'];
     const html = `
     <div class="min-h-screen bg-stone-50 text-stone-900 flex flex-col antialiased">
       ${renderHeaderHtml(siteName)}
@@ -656,6 +747,44 @@ export function renderPageToString(
             <a href="/category/stock-calculators" class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800">Explore Stock Calculators →</a>
           </div>
         </section>
+
+        ${
+          guide
+            ? `
+        <article class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-10 space-y-6 shadow-sm">
+          <div class="border-b border-stone-100 pb-4 space-y-1">
+            <span class="text-emerald-800 font-bold text-xs uppercase tracking-wider">Comprehensive User Guide &amp; How-To Manual</span>
+            <h2 class="text-xl sm:text-2xl font-black text-stone-900">${guide.title}</h2>
+            <p class="text-xs text-stone-500">${guide.subtitle} • <span class="text-emerald-700 font-semibold">${guide.estimatedReadTime}</span></p>
+          </div>
+          <div class="space-y-4 text-xs sm:text-sm text-stone-700 leading-relaxed">
+            ${guide.sections
+              .map(
+                (sec) => `
+              <div class="space-y-2">
+                <h3 class="text-base font-bold text-stone-900">${sec.heading}</h3>
+                <p>${sec.content}</p>
+                ${
+                  sec.bulletPoints && sec.bulletPoints.length > 0
+                    ? `<ul class="list-disc list-inside space-y-1 pl-2 text-stone-600">
+                      ${sec.bulletPoints.map((bp) => `<li>${bp}</li>`).join('')}
+                    </ul>`
+                    : ''
+                }
+              </div>`
+              )
+              .join('')}
+            ${
+              guide.summaryTakeaway
+                ? `<div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 text-xs sm:text-sm">
+                  <strong>Takeaway:</strong> ${guide.summaryTakeaway}
+                </div>`
+                : ''
+            }
+          </div>
+        </article>`
+            : ''
+        }
       </main>
       ${renderFooterHtml(siteName, settings)}
     </div>`;
@@ -667,6 +796,7 @@ export function renderPageToString(
     const canonical = `${baseUrl}/contact`;
     const title = `Contact Us | ${siteName}`;
     const desc = `Get in touch with the ${siteName} editorial and engineering team for feedback, calculator requests, or questions.`;
+    const guide: PageGuideArticle | undefined = SITEWIDE_PAGE_GUIDES['contact'];
     const html = `
     <div class="min-h-screen bg-stone-50 text-stone-900 flex flex-col antialiased">
       ${renderHeaderHtml(siteName)}
@@ -693,6 +823,44 @@ export function renderPageToString(
           <p class="text-xs text-emerald-900 leading-relaxed">We maintain 56 certified calculators across Personal Finance, Mortgages, Retirement, and Stock Markets. Check our full directory below.</p>
           <a href="/" class="inline-block px-4 py-2 rounded-xl bg-emerald-700 text-white font-semibold text-xs hover:bg-emerald-800 transition-colors">Browse All 56 Calculators →</a>
         </div>
+
+        ${
+          guide
+            ? `
+        <article class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-10 space-y-6 shadow-sm">
+          <div class="border-b border-stone-100 pb-4 space-y-1">
+            <span class="text-emerald-800 font-bold text-xs uppercase tracking-wider">Support &amp; Audit Guide</span>
+            <h2 class="text-xl sm:text-2xl font-black text-stone-900">${guide.title}</h2>
+            <p class="text-xs text-stone-500">${guide.subtitle} • <span class="text-emerald-700 font-semibold">${guide.estimatedReadTime}</span></p>
+          </div>
+          <div class="space-y-4 text-xs sm:text-sm text-stone-700 leading-relaxed">
+            ${guide.sections
+              .map(
+                (sec) => `
+              <div class="space-y-2">
+                <h3 class="text-base font-bold text-stone-900">${sec.heading}</h3>
+                <p>${sec.content}</p>
+                ${
+                  sec.bulletPoints && sec.bulletPoints.length > 0
+                    ? `<ul class="list-disc list-inside space-y-1 pl-2 text-stone-600">
+                      ${sec.bulletPoints.map((bp) => `<li>${bp}</li>`).join('')}
+                    </ul>`
+                    : ''
+                }
+              </div>`
+              )
+              .join('')}
+            ${
+              guide.summaryTakeaway
+                ? `<div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 text-xs sm:text-sm">
+                  <strong>Takeaway:</strong> ${guide.summaryTakeaway}
+                </div>`
+                : ''
+            }
+          </div>
+        </article>`
+            : ''
+        }
       </main>
       ${renderFooterHtml(siteName, settings)}
     </div>`;
@@ -704,6 +872,7 @@ export function renderPageToString(
     const canonical = `${baseUrl}/saved`;
     const title = `Saved Financial Calculations | ${siteName}`;
     const desc = `View, compare, and export your locally saved financial scenarios and calculation snapshots.`;
+    const guide: PageGuideArticle | undefined = SITEWIDE_PAGE_GUIDES['saved'];
     const html = `
     <div class="min-h-screen bg-stone-50 text-stone-900 flex flex-col antialiased">
       ${renderHeaderHtml(siteName)}
@@ -714,6 +883,44 @@ export function renderPageToString(
           <p class="text-stone-500 text-xs sm:text-sm">Explore our 56 calculators and click "Save Scenario" to store records for quick offline comparison.</p>
           <a href="/" class="inline-block px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition-colors">Explore All Calculators →</a>
         </div>
+
+        ${
+          guide
+            ? `
+        <article class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-10 space-y-6 shadow-sm mt-6">
+          <div class="border-b border-stone-100 pb-4 space-y-1">
+            <span class="text-emerald-800 font-bold text-xs uppercase tracking-wider">How to Manage Saved Scenarios</span>
+            <h2 class="text-xl sm:text-2xl font-black text-stone-900">${guide.title}</h2>
+            <p class="text-xs text-stone-500">${guide.subtitle} • <span class="text-emerald-700 font-semibold">${guide.estimatedReadTime}</span></p>
+          </div>
+          <div class="space-y-4 text-xs sm:text-sm text-stone-700 leading-relaxed">
+            ${guide.sections
+              .map(
+                (sec) => `
+              <div class="space-y-2">
+                <h3 class="text-base font-bold text-stone-900">${sec.heading}</h3>
+                <p>${sec.content}</p>
+                ${
+                  sec.bulletPoints && sec.bulletPoints.length > 0
+                    ? `<ul class="list-disc list-inside space-y-1 pl-2 text-stone-600">
+                      ${sec.bulletPoints.map((bp) => `<li>${bp}</li>`).join('')}
+                    </ul>`
+                    : ''
+                }
+              </div>`
+              )
+              .join('')}
+            ${
+              guide.summaryTakeaway
+                ? `<div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 text-xs sm:text-sm">
+                  <strong>Takeaway:</strong> ${guide.summaryTakeaway}
+                </div>`
+                : ''
+            }
+          </div>
+        </article>`
+            : ''
+        }
       </main>
       ${renderFooterHtml(siteName, settings)}
     </div>`;
