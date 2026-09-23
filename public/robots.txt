@@ -1,4 +1,4 @@
-# robots.txt for Financial Calculator Suite
+# robots.txt for OKColoring Financial Suite
 # Optimized for Googlebot, Bingbot, and Google AdSense Crawlers
 
 User-agent: *
@@ -12,17 +12,18 @@ Allow: /
 User-agent: Google-Display-Ads-Bot
 Allow: /
 
+# Googlebot Full Site Access
+User-agent: Googlebot
+Allow: /
+
 # Disallow private administration and dashboard paths
 Disallow: /*admin*
 Disallow: /*dashboard*
 Disallow: /*settings*
-Disallow: /#admin*
-Disallow: /#dashboard*
-Disallow: /#settings*
 
 # Disallow API and internal state routes
 Disallow: /api/
 Disallow: /assets/private/
 
 # XML Sitemap Location
-Sitemap: https://omnicalc.pro/sitemap.xml
+Sitemap: https://okcoloring.com/sitemap.xml

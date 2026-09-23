@@ -1,7 +1,7 @@
 import { ALL_CALCULATORS } from '../data/calculatorRegistry';
 import { CATEGORIES } from '../config/categories';
 
-export const DEFAULT_ROBOTS_TXT = `# robots.txt for Financial Calculator Suite
+export const DEFAULT_ROBOTS_TXT = `# robots.txt for OKColoring Financial Suite
 # Optimized for Googlebot, Bingbot, and Google AdSense Crawlers
 
 User-agent: *
@@ -15,31 +15,31 @@ Allow: /
 User-agent: Google-Display-Ads-Bot
 Allow: /
 
+# Googlebot Full Site Access
+User-agent: Googlebot
+Allow: /
+
 # Disallow private administration and dashboard paths
 Disallow: /*admin*
 Disallow: /*dashboard*
 Disallow: /*settings*
-Disallow: /#admin*
-Disallow: /#dashboard*
-Disallow: /#settings*
 
 # Disallow API and internal state routes
 Disallow: /api/
 Disallow: /assets/private/
 
 # XML Sitemap Location
-Sitemap: https://omnicalc.pro/sitemap.xml
+Sitemap: https://okcoloring.com/sitemap.xml
 `;
 
 export const DEFAULT_ADS_TXT = `# ads.txt for Google AdSense Publisher Verification
-# Replace pub-0000000000000000 with your real publisher ID from Google AdSense
-google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+google.com, pub-2702216338646199, DIRECT, f08c47fec0942fa0
 `;
 
 /**
  * Generates clean, well-formed XML Sitemap conforming to sitemaps.org schema
  */
-export function generateSitemapXml(baseUrl: string = 'https://omnicalc.pro'): string {
+export function generateSitemapXml(baseUrl: string = 'https://okcoloring.com'): string {
   const cleanBaseUrl = baseUrl.replace(/\/+$/, '');
   const today = new Date().toISOString().split('T')[0];
 

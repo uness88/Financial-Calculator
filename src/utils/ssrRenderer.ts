@@ -587,7 +587,7 @@ export function renderPageToString(
           <p>When you save scenarios or customize preferences, they are stored strictly in your browser's localStorage. You can clear this data at any time via your browser settings or our <a href="/saved" class="text-emerald-700 underline">Saved Calculations</a> portal.</p>
           
           <h2 class="text-lg font-bold text-stone-900">4. Contact Privacy Officer</h2>
-          <p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us at <a href="/contact" class="text-emerald-700 underline">${settings.supportEmail || 'support@omnicalc.pro'}</a>.</p>
+          <p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us at <a href="/contact" class="text-emerald-700 underline">${settings.supportEmail || 'support@okcoloring.com'}</a>.</p>
         </div>
 
         ${
@@ -808,13 +808,13 @@ export function renderPageToString(
           <div class="p-6 rounded-3xl bg-white border border-stone-200 shadow-sm space-y-3">
             <h2 class="text-base font-bold text-stone-900">Technical &amp; Formula Support</h2>
             <p class="text-xs text-stone-600 leading-relaxed">Found an error or have an algorithm calibration recommendation?</p>
-            <p class="text-xs sm:text-sm font-semibold text-emerald-700 font-mono">${settings.supportEmail || 'support@omnicalc.pro'}</p>
+            <p class="text-xs sm:text-sm font-semibold text-emerald-700 font-mono">${settings.supportEmail || 'support@okcoloring.com'}</p>
           </div>
 
           <div class="p-6 rounded-3xl bg-white border border-stone-200 shadow-sm space-y-3">
             <h2 class="text-base font-bold text-stone-900">General Inquiries &amp; Partnerships</h2>
             <p class="text-xs text-stone-600 leading-relaxed">For business development, press, or API licensing discussions:</p>
-            <p class="text-xs sm:text-sm font-semibold text-emerald-700 font-mono">${settings.contactEmail || 'contact@omnicalc.pro'}</p>
+            <p class="text-xs sm:text-sm font-semibold text-emerald-700 font-mono">${settings.contactEmail || 'contact@okcoloring.com'}</p>
           </div>
         </div>
 

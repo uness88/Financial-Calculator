@@ -4,6 +4,7 @@ import { ALL_CALCULATORS } from '../src/data/calculatorRegistry';
 import { CATEGORIES } from '../src/config/categories';
 import { DEFAULT_SITE_SETTINGS } from '../src/types/siteSettings';
 import { renderPageToString } from '../src/utils/ssrRenderer';
+import { generateSitemapXml, DEFAULT_ROBOTS_TXT } from '../src/utils/sitemapGenerator';
 
 /**
  * Static Site Generation (SSG) Pre-renderer
@@ -85,7 +86,16 @@ async function buildStaticPages() {
     fs.writeFileSync(path.join(distDir, `${route}.html`), html, 'utf-8');
   }
 
-  console.log(`Successfully generated static HTML pages for all 56 calculators, ${CATEGORIES.length} categories, and legal pages!`);
+  // 4. Generate & Sync sitemap.xml and robots.txt
+  const sitemapXml = generateSitemapXml(settings.canonicalBaseUrl || 'https://okcoloring.com');
+  fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemapXml, 'utf-8');
+  fs.writeFileSync(path.join(process.cwd(), 'public', 'sitemap.xml'), sitemapXml, 'utf-8');
+
+  const robotsTxt = settings.customRobotsTxt || DEFAULT_ROBOTS_TXT;
+  fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsTxt, 'utf-8');
+  fs.writeFileSync(path.join(process.cwd(), 'public', 'robots.txt'), robotsTxt, 'utf-8');
+
+  console.log(`Successfully generated static HTML pages, clean sitemap.xml, and robots.txt for okcoloring.com!`);
 }
 
 buildStaticPages().catch(console.error);

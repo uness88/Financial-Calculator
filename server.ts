@@ -4,6 +4,7 @@ import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import { renderPageToString } from './src/utils/ssrRenderer';
 import { DEFAULT_SITE_SETTINGS } from './src/types/siteSettings';
+import { generateSitemapXml, DEFAULT_ROBOTS_TXT, DEFAULT_ADS_TXT } from './src/utils/sitemapGenerator';
 
 const app = express();
 const PORT = 3000;
@@ -59,9 +60,7 @@ function saveSettings(settings: Record<string, any>) {
 // 1. DYNAMIC ROUTE: /ads.txt
 app.get('/ads.txt', (req, res) => {
   const settings = getStoredSettings();
-  const adsTxt =
-    settings.customAdsTxt ||
-    `# ads.txt for Google AdSense Publisher Verification\ngoogle.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0\n`;
+  const adsTxt = settings.customAdsTxt || DEFAULT_ADS_TXT;
 
   res.setHeader('Content-Type', 'text/plain; charset=utf-8');
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -71,9 +70,7 @@ app.get('/ads.txt', (req, res) => {
 // 2. DYNAMIC ROUTE: /robots.txt
 app.get('/robots.txt', (req, res) => {
   const settings = getStoredSettings();
-  const robotsTxt =
-    settings.customRobotsTxt ||
-    `# robots.txt\nUser-agent: *\nAllow: /\n\nUser-agent: Mediapartners-Google\nAllow: /\n\nUser-agent: Google-Display-Ads-Bot\nAllow: /\n\nDisallow: /*admin*\nDisallow: /*dashboard*\nDisallow: /*settings*\n\nSitemap: https://omnicalc.pro/sitemap.xml\n`;
+  const robotsTxt = settings.customRobotsTxt || DEFAULT_ROBOTS_TXT;
 
   res.setHeader('Content-Type', 'text/plain; charset=utf-8');
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -90,7 +87,7 @@ app.get('/sitemap.xml', (req, res) => {
     if (fs.existsSync(sitemapFile)) {
       sitemapXml = fs.readFileSync(sitemapFile, 'utf-8');
     } else {
-      sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>https://omnicalc.pro/</loc>\n  </url>\n</urlset>`;
+      sitemapXml = generateSitemapXml(settings.canonicalBaseUrl || 'https://okcoloring.com');
     }
   }
 

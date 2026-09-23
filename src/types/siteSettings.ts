@@ -62,8 +62,8 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   siteTitle: 'Financial Calculators - Free Online Finance, Loan & Investment Tools',
   siteDescription:
     'Free financial calculators for loans, mortgages, investments, retirement, stocks, savings, taxes, and personal finance. Calculate payments, returns, growth, and more.',
-  supportEmail: 'support@omnicalc.pro',
-  contactEmail: 'support@omnicalc.pro',
+  supportEmail: 'support@okcoloring.com',
+  contactEmail: 'contact@okcoloring.com',
   logoType: 'icon',
   logoIconName: 'Calculator',
   logoBgTheme: 'emerald',
@@ -71,17 +71,17 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   logoEmoji: '🧮',
   logoSvgCode: '',
   customHeadCode: '<!-- Example: Add your Google Analytics, Meta Pixel, or custom CSS here -->\n',
-  customFooterNote: '© 2026 OmniCalc Pro Financial Suite. All rights reserved.',
+  customFooterNote: '© 2026 OKColoring Financial Suite. All rights reserved.',
   adminSecretPath: 'admin-settings',
   enablePinProtection: true,
   adminSecurityPin: '010203',
 
   // SEO & Webmaster defaults
-  canonicalBaseUrl: 'https://omnicalc.pro',
+  canonicalBaseUrl: 'https://okcoloring.com',
   googleSiteVerification: '',
   bingSiteVerification: '',
   defaultOgImage: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&h=630&q=80',
-  twitterHandle: '@OmniCalcPro',
+  twitterHandle: '@OKColoring',
   keywords: 'financial calculators, mortgage calculator, 401k calculator, retirement calculator, investment calculators, loan amortization, stock profit calculator',
   schemaOrgType: 'FinancialService',
 
@@ -93,7 +93,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   enableAdsenseCookieBanner: true,
 
   // Editable files defaults
-  customRobotsTxt: `# robots.txt for Financial Calculator Suite
+  customRobotsTxt: `# robots.txt for OKColoring Financial Suite
 # Optimized for Googlebot, Bingbot, and Google AdSense Crawlers
 
 User-agent: *
@@ -107,20 +107,21 @@ Allow: /
 User-agent: Google-Display-Ads-Bot
 Allow: /
 
+# Googlebot Full Site Access
+User-agent: Googlebot
+Allow: /
+
 # Disallow private administration and dashboard paths
 Disallow: /*admin*
 Disallow: /*dashboard*
 Disallow: /*settings*
-Disallow: /#admin*
-Disallow: /#dashboard*
-Disallow: /#settings*
 
 # Disallow API and internal state routes
 Disallow: /api/
 Disallow: /assets/private/
 
 # XML Sitemap Location
-Sitemap: https://omnicalc.pro/sitemap.xml
+Sitemap: https://okcoloring.com/sitemap.xml
 `,
   customSitemapXml: '',
   lastUpdated: Date.now(),
