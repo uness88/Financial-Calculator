@@ -241,6 +241,27 @@ export function renderPageToString(
             </div>
           </div>
 
+          <!-- How It Works & Educational Steps -->
+          ${
+            calc.howItWorks && calc.howItWorks.length > 0
+              ? `
+          <section class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-10 space-y-4 shadow-sm">
+            <h2 class="text-xl sm:text-2xl font-black text-stone-900">How This Financial Calculator Works</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              ${calc.howItWorks
+                .map(
+                  (step, idx) => `
+                <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 flex gap-3.5">
+                  <span class="flex-shrink-0 w-7 h-7 rounded-xl bg-emerald-600 text-white font-bold text-xs flex items-center justify-center">${idx + 1}</span>
+                  <p class="text-xs sm:text-sm text-stone-700 leading-relaxed font-medium">${step}</p>
+                </div>`
+                )
+                .join('')}
+            </div>
+          </section>`
+              : ''
+          }
+
           <!-- Mathematical Formula & Methodology Breakdown -->
           ${
             calc.formula
@@ -278,6 +299,38 @@ export function renderPageToString(
               : ''
           }
 
+          <!-- Financial Meaning & Interpretation -->
+          ${
+            calc.whatItMeans
+              ? `
+          <section class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-10 space-y-3 shadow-sm">
+            <h2 class="text-xl sm:text-2xl font-black text-stone-900">Financial Significance &amp; Interpretation</h2>
+            <p class="text-xs sm:text-sm text-stone-700 leading-relaxed">${calc.whatItMeans}</p>
+          </section>`
+              : ''
+          }
+
+          <!-- Factors to Consider -->
+          ${
+            calc.factorsToConsider && calc.factorsToConsider.length > 0
+              ? `
+          <section class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-10 space-y-4 shadow-sm">
+            <h2 class="text-xl sm:text-2xl font-black text-stone-900">Key Strategic Factors to Consider</h2>
+            <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              ${calc.factorsToConsider
+                .map(
+                  (factor) => `
+                <li class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 text-xs sm:text-sm text-stone-700 flex items-start gap-2.5">
+                  <span class="text-emerald-600 font-bold mt-0.5">✓</span>
+                  <span>${factor}</span>
+                </li>`
+                )
+                .join('')}
+            </ul>
+          </section>`
+              : ''
+          }
+
           <!-- Practical Worked Example -->
           ${
             calc.example
@@ -292,6 +345,18 @@ export function renderPageToString(
               </ol>
               <p class="pt-2 text-xs sm:text-sm font-bold text-emerald-800">Final Outcome: ${calc.example.finalOutcome}</p>
             </div>
+          </section>`
+              : ''
+          }
+
+          <!-- Institutional Methodology & Compliance Review -->
+          ${
+            calc.methodologyReview
+              ? `
+          <section class="bg-emerald-950 text-white rounded-3xl p-6 sm:p-8 space-y-2 border border-emerald-800 shadow-md">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400">Institutional Review &amp; Compliance</h3>
+            <p class="text-xs sm:text-sm text-emerald-100 leading-relaxed">${calc.methodologyReview}</p>
+            ${calc.lastUpdated ? `<span class="text-[11px] text-emerald-400 block pt-1">Calibrated Date: ${calc.lastUpdated}</span>` : ''}
           </section>`
               : ''
           }

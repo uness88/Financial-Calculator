@@ -86,10 +86,10 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   schemaOrgType: 'FinancialService',
 
   // AdSense defaults
-  adsensePublisherId: '',
-  adsenseAutoAdsEnabled: false,
-  adsenseAccountStatus: 'not_connected',
-  customAdsTxt: `google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0\n`,
+  adsensePublisherId: 'ca-pub-2702216338646199',
+  adsenseAutoAdsEnabled: true,
+  adsenseAccountStatus: 'ready',
+  customAdsTxt: `google.com, pub-2702216338646199, DIRECT, f08c47fec0942fa0\n`,
   enableAdsenseCookieBanner: true,
 
   // Editable files defaults
