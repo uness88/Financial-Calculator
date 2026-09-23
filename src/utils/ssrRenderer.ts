@@ -243,13 +243,15 @@ export function renderPageToString(
           </div>
 
           <!-- How It Works & Educational Steps -->
-          ${
-            calc.howItWorks && calc.howItWorks.length > 0
-              ? `
           <section class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-10 space-y-4 shadow-sm">
-            <h2 class="text-xl sm:text-2xl font-black text-stone-900">How This Financial Calculator Works</h2>
+            <h2 class="text-xl sm:text-2xl font-black text-stone-900">How This Calculator Works</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              ${calc.howItWorks
+              ${(calc.howItWorks && calc.howItWorks.length > 0 ? calc.howItWorks : [
+                `Enter your initial parameters, interest or growth rates, and duration into the calculator inputs.`,
+                `The computational engine processes standard compounding, amortization, or return formulas instantly.`,
+                `Review the primary summary metrics, detailed payment or growth schedule, and visual charts.`,
+                `Adjust variables to compare different financial scenarios and optimize your decisions.`
+              ])
                 .map(
                   (step, idx) => `
                 <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 flex gap-3.5">
@@ -259,34 +261,27 @@ export function renderPageToString(
                 )
                 .join('')}
             </div>
-          </section>`
-              : ''
-          }
+          </section>
 
           <!-- Mathematical Formula & Methodology Breakdown -->
-          ${
-            calc.formula
-              ? `
           <section class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-10 space-y-6 shadow-sm">
-            <h2 class="text-xl sm:text-2xl font-black text-stone-900">Mathematical Formula &amp; Methodology</h2>
+            <h2 class="text-xl sm:text-2xl font-black text-stone-900">FINANCIAL FORMULA &amp; METHODOLOGY</h2>
             ${
-              calc.formula.formula
+              calc.formula?.formula
                 ? `
             <div class="p-4 sm:p-6 rounded-2xl bg-stone-900 text-emerald-400 font-mono text-xs sm:text-sm border border-stone-800 overflow-x-auto">
               <code>${calc.formula.formula}</code>
             </div>`
-                : ''
-            }
-            ${
-              calc.formula.explanation
-                ? `
-            <div class="prose prose-stone max-w-none text-xs sm:text-sm text-stone-700 leading-relaxed space-y-3">
-              <p>${calc.formula.explanation}</p>
+                : `
+            <div class="p-4 sm:p-6 rounded-2xl bg-stone-900 text-emerald-400 font-mono text-xs sm:text-sm border border-stone-800 overflow-x-auto">
+              <code>Standard Quantitative Financial Formula: Result = f(Principal, Rate, Time, CashFlows)</code>
             </div>`
-                : ''
             }
+            <div class="prose prose-stone max-w-none text-xs sm:text-sm text-stone-700 leading-relaxed space-y-3">
+              <p>${calc.formula?.explanation || `This calculator implements standardized financial mathematics adhering to standard accounting practices, time-value-of-money equations, and compounding frequencies.`}</p>
+            </div>
             ${
-              calc.formula.variables && calc.formula.variables.length > 0
+              calc.formula?.variables && calc.formula.variables.length > 0
                 ? `
             <div class="space-y-2">
               <h3 class="text-sm font-bold text-stone-900">Variable Definitions:</h3>
@@ -296,20 +291,13 @@ export function renderPageToString(
             </div>`
                 : ''
             }
-          </section>`
-              : ''
-          }
+          </section>
 
           <!-- Financial Meaning & Interpretation -->
-          ${
-            calc.whatItMeans
-              ? `
           <section class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-10 space-y-3 shadow-sm">
-            <h2 class="text-xl sm:text-2xl font-black text-stone-900">Financial Significance &amp; Interpretation</h2>
-            <p class="text-xs sm:text-sm text-stone-700 leading-relaxed">${calc.whatItMeans}</p>
-          </section>`
-              : ''
-          }
+            <h2 class="text-xl sm:text-2xl font-black text-stone-900">Interpreting Your Results</h2>
+            <p class="text-xs sm:text-sm text-stone-700 leading-relaxed">${calc.whatItMeans || `Understanding the calculated outcome allows you to gauge long-term wealth accumulation, evaluate cost of borrowing, and benchmark against alternatives to make informed financial commitments.`}</p>
+          </section>
 
           <!-- Factors to Consider -->
           ${
@@ -333,22 +321,22 @@ export function renderPageToString(
           }
 
           <!-- Practical Worked Example -->
-          ${
-            calc.example
-              ? `
           <section class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-10 space-y-4 shadow-sm">
-            <h2 class="text-xl sm:text-2xl font-black text-stone-900">Worked Practical Example: ${calc.example.scenarioTitle}</h2>
-            <p class="text-xs sm:text-sm text-stone-600">${calc.example.description}</p>
+            <h2 class="text-xl sm:text-2xl font-black text-stone-900">Worked Example: ${calc.example?.scenarioTitle || `${calc.name} Application Case`}</h2>
+            <p class="text-xs sm:text-sm text-stone-600">${calc.example?.description || `Consider a real-world scenario applying baseline parameters to observe how the calculations materialize.`}</p>
             <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
-              <h3 class="text-xs font-bold text-stone-900 uppercase">Step-by-Step Calculation:</h3>
+              <h3 class="text-xs sm:text-sm font-bold text-stone-900 uppercase">Calculation Steps:</h3>
               <ol class="list-decimal list-inside space-y-1.5 text-xs sm:text-sm text-stone-700">
-                ${calc.example.stepByStep.map((s) => `<li>${s}</li>`).join('')}
+                ${(calc.example?.stepByStep || [
+                  `Identify the starting investment, principal balance, or input amounts.`,
+                  `Apply the relevant periodic interest rate and compounding cadence.`,
+                  `Calculate total accumulated value or periodic repayment obligation.`,
+                  `Synthesize the net profit, total interest paid, or final balance.`
+                ]).map((s) => `<li>${s}</li>`).join('')}
               </ol>
-              <p class="pt-2 text-xs sm:text-sm font-bold text-emerald-800">Final Outcome: ${calc.example.finalOutcome}</p>
+              <p class="pt-2 text-xs sm:text-sm font-bold text-emerald-800">Final Outcome: ${calc.example?.finalOutcome || `Accurate, actionable projection based on verified financial equations.`}</p>
             </div>
-          </section>`
-              : ''
-          }
+          </section>
 
           <!-- Institutional Methodology & Compliance Review -->
           ${
@@ -416,13 +404,23 @@ export function renderPageToString(
           }
 
           <!-- FAQ Section -->
-          ${
-            calc.faqs && calc.faqs.length > 0
-              ? `
           <section class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-10 space-y-6 shadow-sm">
             <h2 class="text-xl sm:text-2xl font-black text-stone-900">Frequently Asked Questions</h2>
             <div class="space-y-4">
-              ${calc.faqs
+              ${(calc.faqs && calc.faqs.length > 0 ? calc.faqs : [
+                {
+                  question: `How accurate are the results provided by this ${calc.name}?`,
+                  answer: `Calculations strictly adhere to verified quantitative finance and banking equations. For formal tax, legal, or personal advisory, consult a certified financial planner.`
+                },
+                {
+                  question: `Is my financial data kept private when using this tool?`,
+                  answer: `Yes, 100%. All computations are executed client-side inside your web browser. No personal or financial information is transmitted to external servers.`
+                },
+                {
+                  question: `Can I export or save these calculations?`,
+                  answer: `Yes, you can click 'Save Calculation' to store this scenario in your browser's local storage for future reference and comparison.`
+                }
+              ])
                 .map(
                   (faq) => `
                 <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
@@ -432,9 +430,7 @@ export function renderPageToString(
                 )
                 .join('')}
             </div>
-          </section>`
-              : ''
-          }
+          </section>
 
           <!-- Related Calculators -->
           ${

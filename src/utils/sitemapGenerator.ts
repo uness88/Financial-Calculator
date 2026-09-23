@@ -29,7 +29,7 @@ Disallow: /api/
 Disallow: /assets/private/
 
 # XML Sitemap Location
-Sitemap: https://okcoloring.com/sitemap.xml
+Sitemap: https://www.okcoloring.com/sitemap.xml
 `;
 
 export const DEFAULT_ADS_TXT = `# ads.txt for Google AdSense Publisher Verification
@@ -39,7 +39,7 @@ google.com, pub-2702216338646199, DIRECT, f08c47fec0942fa0
 /**
  * Generates clean, well-formed XML Sitemap conforming to sitemaps.org schema
  */
-export function generateSitemapXml(baseUrl: string = 'https://okcoloring.com'): string {
+export function generateSitemapXml(baseUrl: string = 'https://www.okcoloring.com'): string {
   const cleanBaseUrl = baseUrl.replace(/\/+$/, '');
   const today = new Date().toISOString().split('T')[0];
 

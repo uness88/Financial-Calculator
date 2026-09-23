@@ -26,4 +26,4 @@ Disallow: /api/
 Disallow: /assets/private/
 
 # XML Sitemap Location
-Sitemap: https://okcoloring.com/sitemap.xml
+Sitemap: https://www.okcoloring.com/sitemap.xml

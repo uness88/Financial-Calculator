@@ -77,7 +77,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   adminSecurityPin: '010203',
 
   // SEO & Webmaster defaults
-  canonicalBaseUrl: 'https://okcoloring.com',
+  canonicalBaseUrl: 'https://www.okcoloring.com',
   googleSiteVerification: '',
   bingSiteVerification: '',
   defaultOgImage: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&h=630&q=80',
@@ -121,7 +121,7 @@ Disallow: /api/
 Disallow: /assets/private/
 
 # XML Sitemap Location
-Sitemap: https://okcoloring.com/sitemap.xml
+Sitemap: https://www.okcoloring.com/sitemap.xml
 `,
   customSitemapXml: '',
   lastUpdated: Date.now(),
