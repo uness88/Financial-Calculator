@@ -63,6 +63,7 @@ async function buildStaticPages() {
     fs.mkdirSync(catDir, { recursive: true });
     const html = generateHtml(`/category/${cat.slug}`);
     fs.writeFileSync(path.join(catDir, 'index.html'), html, 'utf-8');
+    fs.writeFileSync(path.join(distDir, 'category', `${cat.slug}.html`), html, 'utf-8');
   }
 
   // 2. Generate Calculator Pages (all 56)
@@ -71,6 +72,7 @@ async function buildStaticPages() {
     fs.mkdirSync(calcDir, { recursive: true });
     const html = generateHtml(`/calculator/${calc.slug}`);
     fs.writeFileSync(path.join(calcDir, 'index.html'), html, 'utf-8');
+    fs.writeFileSync(path.join(distDir, 'calculator', `${calc.slug}.html`), html, 'utf-8');
   }
 
   // 3. Generate Static Legal & Info Pages
@@ -80,6 +82,7 @@ async function buildStaticPages() {
     fs.mkdirSync(routeDir, { recursive: true });
     const html = generateHtml(`/${route}`);
     fs.writeFileSync(path.join(routeDir, 'index.html'), html, 'utf-8');
+    fs.writeFileSync(path.join(distDir, `${route}.html`), html, 'utf-8');
   }
 
   console.log(`Successfully generated static HTML pages for all 56 calculators, ${CATEGORIES.length} categories, and legal pages!`);
